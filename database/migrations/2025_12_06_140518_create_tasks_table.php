@@ -1,4 +1,4 @@
-<?php
+w<?php
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -8,12 +8,13 @@ return new class extends Migration
 {
     /**
      * Run the migrations.
+     *
      */
     public function up(): void
     {
         Schema::create('tasks', function (Blueprint $table) {
             $table->id();
-            $table->string('title',min(3));
+            $table->string('title');
             $table->longText('description')->nullable();
 
             //statues & priority
@@ -25,7 +26,7 @@ return new class extends Migration
             $table->foreignId('project_id')->nullable()->constrained('projects')->onDelete('set null');
             $table->foreignId('assignee_id')->nullable()->constrained('users')->onDelete('set null');
             $table->foreignId('created_by')->constrained('users')->onDelete('restrict');
-            $table->foreignId('updated_by')->nullable()->constrained('users')->onDelete('set null'); //exist when create ?
+            $table->foreignId('updated_by')->nullable()->constrained('users')->onDelete('set null');
 
             //dates
             $table->dateTime('started_at')->nullable();
@@ -44,7 +45,7 @@ return new class extends Migration
             $table->index('due_date');
 
             //Complex Indexes
-            $table->index(['team_id', 'status']);
+            $table->index(['assignee_id', 'status']);
             $table->index(['project_id', 'status']);
 
         });

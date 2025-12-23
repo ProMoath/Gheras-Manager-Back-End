@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Auth;
 
 class Project extends Model
@@ -18,6 +19,10 @@ class Project extends Model
     protected $casts = [
         'active' => 'boolean'
     ];
+    public function Tasks(): HasMany
+    {
+        return $this->hasMany(Task::class);
+    }
     public function editor()
     {
         return $this->belongsTo(User::class, 'updated_by');

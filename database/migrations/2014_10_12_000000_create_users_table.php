@@ -13,16 +13,17 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('name',min(2));
+            $table->string('name');
             $table->string('email')->unique();
             $table->string('password');
             $table->enum('role', ['admin', 'supervisor', 'volunteer'])->default('volunteer');
             $table->boolean('status')->default(true);
             $table->string('telegram_id', 255)->nullable();
-            $table->string('job_field', 255)->nullable();
-            $table->integer('experience_years', 255)->nullable();
+            $table->string('job_field')->nullable();
+            $table->integer('experience_years')->nullable();
             $table->integer('age')->nullable();
             $table->string('country', 255)->nullable();
+
 
 
             $table->decimal('weekly_hours', 5, 2)->nullable();

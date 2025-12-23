@@ -22,7 +22,7 @@ class Task extends Model
         'due_date' => 'date',
         'started_at' => 'datetime',
         'completed_at' => 'datetime',
-        'work_hours' => 'decimal:2', // مثلاً يحفظ رقمين بعد الفاصلة
+        'work_hours' => 'decimal:2',
     ];
 
     // Relationships
@@ -77,7 +77,7 @@ class Task extends Model
                 $task->updated_by = Auth::id();
 
             }
-        });
+        });         // automatically add creator or updater of the task
         static::updating(function (Task $task) {
             if ($task->isDirty('status')) {
                 $newStatus = $task->status;

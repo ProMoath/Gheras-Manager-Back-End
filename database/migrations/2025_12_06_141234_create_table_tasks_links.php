@@ -12,13 +12,12 @@ return new class extends Migration
     public function up(): void
     {
     Schema::create('tasks_links', function (Blueprint $table) {
-        $table->id();
         $table->foreignId('source_task_id')->constrained('tasks')->onDelete('cascade'); //source task
         $table->foreignId('linked_task_id')->constrained('tasks')->onDelete('cascade'); //linked task
         $table->timestamps();
 
-        // reject double
-        $table->unique(['source_task_id', 'linked_task_id']);
+        // Composite primary key
+        $table->primary(['source_task_id', 'linked_task_id']);
       });
     }
 

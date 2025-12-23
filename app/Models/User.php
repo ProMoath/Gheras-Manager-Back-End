@@ -70,6 +70,10 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasMany(Task::class,'assignee_id');
     }
+    public function updatedTasks(): HasMany
+    {
+        return $this->hasMany(Task::class,'updated_by');
+    }
 
     // Accessors
     public function scopeAdmin($query)
@@ -92,7 +96,7 @@ class User extends Authenticatable implements JWTSubject
     {
         static::deleting(function (User $user) {
             // Prevent deletion if team has tasks
-            if ($user->tasks()->exists()) {
+            if ($user->assignedTasks()->exists()) {
                 throw new \Exception('Cannot delete User with existing tasks');
             }
         });
@@ -103,12 +107,12 @@ class User extends Authenticatable implements JWTSubject
     }
     public function getJWTIdentifier()
     {
-        return $this->getKey(); // يرجع الـ ID
+        return $this->getKey(); // return id
     }
 
     public function getJWTCustomClaims()
     {
-        return []; // إذا أردت إضافة بيانات إضافية داخل التوكن
+        return []; // if we want additional data in the token
     }
 
 }

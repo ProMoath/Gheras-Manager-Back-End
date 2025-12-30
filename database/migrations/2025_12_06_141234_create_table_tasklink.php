@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-    Schema::create('tasks_links', function (Blueprint $table) {
+    Schema::create('tasklink', function (Blueprint $table) {
         $table->foreignId('source_task_id')->constrained('tasks')->onDelete('cascade'); //source task
         $table->foreignId('linked_task_id')->constrained('tasks')->onDelete('cascade'); //linked task
         $table->timestamps();

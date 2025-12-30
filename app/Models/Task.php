@@ -38,17 +38,30 @@ class Task extends Model
     {
         return $this->belongsTo(User::class, 'assignee_id');
     }
-    public function linkedTask(): BelongsToMany
+    public function team(): belongsTo
     {
-        return $this->belongsToMany(Task::class, 'linked_task_id','source_task_id');
+        return $this->belongsTo(Team::class); //Eloquent will assume the (Team) model's foreign key on the (Tasks) table is (team_id)
     }
-    public function sourceTask(): BelongsToMany
+    public function linkedTask(): BelongsToMany //get the linkedTask that related to sourceTask
     {
-        return $this->belongsToMany(Task::class, 'source_task_id','linked_task_id');
+        return $this->belongsToMany(Task::class, 'tasklink','linked_task_id','source_task_id');
+    }
+    public function sourceTask(): BelongsToMany //get the sourceTask that related to linkedTask
+    {
+        return $this->belongsToMany(Task::class, 'tasklink','source_task_id','linked_task_id');
+    }
+
+    public function parentTask(): BelongsToMany //Get the parent_task that owns rhe sub_task
+    {
+        return $this->belongsToMany(Team::class,'sub_tasks','parent_task','sub_task');
+    }
+    public function subTask(): BelongsToMany //Get the sub_task for the parent_task task.
+    {
+        return $this->belongsToMany(Team::class, 'sub_tasks','sub_task','parent_task');
     }
     public function project(): BelongsTo
     {
-        return $this->belongsTo(Project::class);
+        return $this->belongsTo(Project::class); //Eloquent will assume the (Project) model's foreign key on the (Tasks) table is (project_id)
     }
     public function canTransitionTo(string $newStatus): bool
     {

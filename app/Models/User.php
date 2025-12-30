@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -33,6 +33,7 @@ class User extends Authenticatable implements JWTSubject
         'age',
         'country',
         'weekly_hours',
+        'role_id',
     ];
 
     /**
@@ -60,7 +61,7 @@ class User extends Authenticatable implements JWTSubject
     // Relationships
     public function teams(): BelongsToMany
     {
-        return $this->belongsToMany(Team::class,'team_user')->withTimestamps();
+        return $this->belongsToMany(Team::class,'team_user')->withTimestamps(); // Eloquent will assume the foreign keys columns on the (team_user) Table are (team_id,user_id)
     }
     public function createdTasks(): HasMany
     {
@@ -75,19 +76,24 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasMany(Task::class,'updated_by');
     }
 
+    public function role(): BelongsTo
+    {
+        return $this->belongsTo(Role::class);
+    }
+
     // Accessors
     public function scopeAdmin($query)
     {
-        return $query->where('role', 'admin');
+        return $query->where('role', 1);
     }
     public function scopeSupervisor($query)
     {
-        return $query->where('role','supervisor');
+        return $query->where('role',2);
     }
 
     public function scopeVolunteer($query)
     {
-        return $query->where('role','volunteer');
+        return $query->where('role',3);
     }
 
 

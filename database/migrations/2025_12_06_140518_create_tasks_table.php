@@ -18,12 +18,13 @@ return new class extends Migration
             $table->longText('description')->nullable();
 
             //statues & priority
-            $table->enum('status', ['new', 'scheduled', 'in_progress', 'issue', 'done', 'docs'])->default('new');
-            $table->enum('priority', ['very_urgent', 'urgent', 'medium', 'normal'])->default('normal');
+            $table->enum('status', ['open', 'in_progress', 'testing', 'resolved']);
+            $table->enum('priority', ['critical', 'major', 'minor']);
             $table->date('due_date')->nullable();
-
+            $table->enum('type',['new','bug']);
             //relationships
             $table->foreignId('project_id')->nullable()->constrained('projects')->onDelete('set null');
+            $table->foreignId('team_id')->nullable()->constrained('teams')->onDelete('set null');
             $table->foreignId('assignee_id')->nullable()->constrained('users')->onDelete('set null');
             $table->foreignId('created_by')->constrained('users')->onDelete('restrict');
             $table->foreignId('updated_by')->nullable()->constrained('users')->onDelete('set null');

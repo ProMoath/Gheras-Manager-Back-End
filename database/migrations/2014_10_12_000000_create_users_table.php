@@ -15,23 +15,25 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
-            $table->string('password');
-            $table->enum('role', ['admin', 'supervisor', 'volunteer'])->default('volunteer');
-            $table->boolean('status')->default(true);
-            $table->string('telegram_id', 255)->nullable();
-            $table->string('job_field')->nullable();
-            $table->integer('experience_years')->nullable();
             $table->integer('age')->nullable();
             $table->string('country', 255)->nullable();
+            $table->string('telegram_id', 255)->nullable();
+            $table->string('job_field')->nullable();
+           // $table->enum('role', ['admin', 'supervisor', 'volunteer'])->default('volunteer');
+            $table->string('experience')->nullable();
+            $table->integer('experience_years')->nullable();
+            $table->string('job_description')->nullable();
+            $table->boolean('status')->default(true);
+            $table->string('password');
 
-
+            $table->foreignId('role_id')->default(3)->constrained('roles')->onDelete('set null');
 
             $table->decimal('weekly_hours', 5, 2)->nullable();
             $table->rememberToken();
             $table->timestamps();
 
             // Indexes columns
-            $table->index('role');
+            $table->index('role_id');
             $table->index('status');
             $table->index('email');
 

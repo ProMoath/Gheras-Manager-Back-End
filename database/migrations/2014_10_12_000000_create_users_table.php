@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use App\Models\Role;
 
 return new class extends Migration
 {
@@ -22,12 +23,12 @@ return new class extends Migration
            // $table->enum('role', ['admin', 'supervisor', 'volunteer'])->default('volunteer');
             $table->integer('experience_years')->nullable();
             $table->text('experience')->nullable();
-            $table->string('job_field')->nullable();
+            $table->string('job_title')->nullable();
             $table->longText('job_description')->nullable();
             $table->boolean('status')->default(true);
             $table->string('password');
 
-            $table->foreignId('role_id')->constrained('roles')->onDelete('restrict');
+            $table->foreignId('role_id')->default(Role::volunteer)->constrained('roles')->onDelete('restrict');
 
             $table->decimal('weekly_hours', 5, 2)->unsigned()->nullable();
             $table->rememberToken();

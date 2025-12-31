@@ -14,21 +14,22 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('phone')->nullable();
             $table->string('email')->unique();
             $table->integer('age')->nullable();
-            $table->string('country', 255)->nullable();
-            $table->string('telegram_id', 255)->nullable();
-            $table->string('job_field')->nullable();
+            $table->string('country')->nullable();
+            $table->string('telegram_id')->nullable();
            // $table->enum('role', ['admin', 'supervisor', 'volunteer'])->default('volunteer');
-            $table->string('experience')->nullable();
             $table->integer('experience_years')->nullable();
-            $table->string('job_description')->nullable();
+            $table->text('experience')->nullable();
+            $table->string('job_field')->nullable();
+            $table->longText('job_description')->nullable();
             $table->boolean('status')->default(true);
             $table->string('password');
 
-            $table->foreignId('role_id')->default(3)->constrained('roles')->onDelete('set null');
+            $table->foreignId('role_id')->constrained('roles')->onDelete('restrict');
 
-            $table->decimal('weekly_hours', 5, 2)->nullable();
+            $table->decimal('weekly_hours', 5, 2)->unsigned()->nullable();
             $table->rememberToken();
             $table->timestamps();
 

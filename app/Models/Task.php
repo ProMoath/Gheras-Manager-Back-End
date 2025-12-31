@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Auth;
 
 class Task extends Model
@@ -13,7 +14,7 @@ class Task extends Model
     use HasFactory;
     protected $fillable = [
         'title', 'description', 'status', 'priority', 'due_date',
-        'team_id', 'project_id', 'assignee_id',
+        'type','team_id', 'project_id', 'assignee_id','parent_task_id',
         'started_at', 'completed_at', 'work_hours'
     ];
 
@@ -51,18 +52,26 @@ class Task extends Model
         return $this->belongsToMany(Task::class, 'tasklink','source_task_id','linked_task_id');
     }
 
-    public function parentTask(): BelongsToMany //Get the parent_task that owns rhe sub_task
+    //sub tasks
+    public function parentTask(): belongsTo // Access to father from suns
     {
-        return $this->belongsToMany(Team::class,'sub_tasks','parent_task','sub_task');
+        return $this->belongsTo(Task::class,'parent_task_id');
     }
-    public function subTask(): BelongsToMany //Get the sub_task for the parent_task task.
+    public function subTask(): hasMany //Access to suns from father
     {
-        return $this->belongsToMany(Team::class, 'sub_tasks','sub_task','parent_task');
+        return $this->hasMany(Task::class,'parent_task_id');
     }
+    public function isSubTasks(): bool
+    {
+        return $this->parent_task_id !== null;
+    }
+
     public function project(): BelongsTo
     {
         return $this->belongsTo(Project::class); //Eloquent will assume the (Project) model's foreign key on the (Tasks) table is (project_id)
     }
+
+    // Status transition logic
     public function canTransitionTo(string $newStatus): bool
     {
         $transitions = [
@@ -91,6 +100,7 @@ class Task extends Model
 
             }
         });         // automatically add creator or updater of the task
+
         static::updating(function (Task $task) {
             if ($task->isDirty('status')) {
                 $newStatus = $task->status;

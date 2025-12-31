@@ -11,6 +11,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Tymon\JWTAuth\Contracts\JWTSubject;
+use App\Models\Role;
 
 class User extends Authenticatable implements JWTSubject
 {
@@ -23,17 +24,19 @@ class User extends Authenticatable implements JWTSubject
      */
     protected $fillable = [
         'name',
+        'phone',
         'email',
-        'password',
-        'role',
-        'status',
-        'telegram_id',
-        'job_field',
-        'experience_years',
         'age',
         'country',
-        'weekly_hours',
+        'telegram_id',
+        'experience_years',
+        'experience',
+        'job_field',
+        'job_description',
+        'status',
+        'password',
         'role_id',
+        'weekly_hours',
     ];
 
     /**
@@ -56,6 +59,10 @@ class User extends Authenticatable implements JWTSubject
         'password' => 'hashed',
         'status' => 'boolean',
         'weekly_hours' => 'float'
+    ];
+    protected $attributes=[
+        'status'=>true,
+        'role_id' => Role::volunteer
     ];
 
     // Relationships
@@ -84,17 +91,18 @@ class User extends Authenticatable implements JWTSubject
     // Accessors
     public function scopeAdmin($query)
     {
-        return $query->where('role', 1);
+        return $query->where('role_id',Role::admin);
     }
     public function scopeSupervisor($query)
     {
-        return $query->where('role',2);
+        return $query->where('role_id',Role::supervisor);
     }
 
     public function scopeVolunteer($query)
     {
-        return $query->where('role',3);
+        return $query->where('role_id',Role::volunteer);
     }
+
 
 
     // Events

@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
     Schema::create('tasklink', function (Blueprint $table) {
-        $table->foreignId('source_task_id')->constrained('tasks')->onDelete('cascade'); //source task
-        $table->foreignId('linked_task_id')->constrained('tasks')->onDelete('cascade'); //linked task
+        $table->foreignId('source_task_id')->constrained('tasks')->onDelete('set null'); //source task
+        $table->foreignId('linked_task_id')->constrained('tasks')->onDelete('set null'); //linked task
         $table->timestamps();
 
         // Composite primary key
@@ -26,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('table_tasks_links');
+        Schema::dropIfExists('table_tasklink');
     }
 };

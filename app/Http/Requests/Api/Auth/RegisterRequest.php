@@ -24,16 +24,30 @@ class RegisterRequest extends FormRequest
 
 
         return [
-            'name' => ['required|string|min:2|max:255'],
-            'email' => ['required|string|email|max:255|unique:users'],
-            'password' => ['required|string|min:8|confirmed'],
-            'phone' => ['nullable|string|max:10'],
-            'age' => ['nullable|digits_between:18,100'],
-            'job_title' => ['nullable|string|max:255'],
-            'experience_years' => ['nullable|digits_between:0,50'],
-            'telegram_id' => ['nullable|min:2|max:32'],
-            'jop_description' => ['nullable|string|max:2000'],
-            'role_id' => ['nullable|exists:roles,id'],
+            'name' => ['required', 'string', 'min:2', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email'],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
+
+            // الحقول الاختيارية
+            'phone' => ['nullable', 'string', 'max:20'],
+            'age' => ['nullable', 'integer', 'between:18,100'],
+            'country' => ['nullable', 'string', 'max:255'],
+
+            'experience' => ['nullable', 'string', 'max:2000'],
+            'experience_years' => ['nullable', 'integer', 'min:0', 'max:50'],
+
+            'weekly_hours' => ['nullable', 'numeric', 'min:0', 'max:168'],
+            'telegram_id' => ['nullable', 'string', 'min:2', 'max:50'],
+
+            'job_title' => ['nullable', 'string', 'max:255'],
+            'job_description' => ['nullable', 'string'],
+
+            'role_id' => ['nullable', 'integer', 'exists:roles,id'],
+            'status' => ['nullable', 'boolean'],
+
+
+            'teams' => ['nullable', 'array'],
+            'teams.*' => ['integer', 'exists:teams,id'],
         ];
 
     }
@@ -43,6 +57,7 @@ class RegisterRequest extends FormRequest
             'name.required' => 'يجب إدخال إسم المستخدم!',
             'email.unique' => 'البريد الإلكتروني مسجل مسبقا!ً',
             'password.confirmed' => 'تأكيد كلمة المرور غير متطابقة!',
+            'teams.*.exists' => 'أحد الفرق المختارة غير موجود في النظام.',
         ];
     }
 }

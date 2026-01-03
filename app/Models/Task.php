@@ -35,11 +35,11 @@ class Task extends Model
     {
         return $this->belongsTo(User::class, 'updated_by');
     }
-    public function assignee(): belongsTo
+    public function assignee(): BelongsTo
     {
         return $this->belongsTo(User::class, 'assignee_id');
     }
-    public function team(): belongsTo
+    public function team(): BelongsTo
     {
         return $this->belongsTo(Team::class); //Eloquent will assume the (Team) model's foreign key on the (Tasks) table is (team_id)
     }

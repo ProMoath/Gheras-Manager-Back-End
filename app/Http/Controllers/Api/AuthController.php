@@ -1,44 +1,58 @@
 <?php
 
-namespace App\Http\Controllers\Api\Auth;
+namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\Auth\LoginRequest;
 use App\Http\Requests\Api\Auth\RegisterRequest;
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rules\Password;
+use Illuminate\Support\Facades\DB;
 
 
 class AuthController extends Controller
 {
     public function register(RegisterRequest $request)
     {
+        $result = DB::transaction(function () use ($request)
+        {
         $validatedData = $request->validated();
         $validatedData['password'] = Hash::make($validatedData['password']);
-        $validatedData['role_id']=$validatedData['role_id'] ?? 3;
+        $validatedData['role_id']=$validatedData['role_id']?? Role::volunteer;
+        $validatedData['status']=$validatedData['status'] ?? true;
 
         $user = User::create($validatedData);
 
+            if (isset($validatedData['teams']))
+                $user->teams()->attach($validatedData['teams']);
+
+
         $token = $user->createToken('auth_token')->plainTextToken;
+            return compact('user', 'token');
+        });
+
+            //$user->load('role');
+            $result['user']->load(['role', 'teams']);
 
         return response()->json([
             'success' => true,
             'data' => [
-                'user' => $user,
-                'token' => $token,
+                'user' =>$result['user'],
+                'token' => $result['token'],
+                'role_name'=> $result['user']->role->name ?? Role::volunteer,
             ],
             'message' => 'user signup successfully',
         ], 201);
     }
+
 
     public function login(LoginRequest $request)
     {
        $validatedData = $request->validated();
 
         $user = User::where('email', $validatedData['email'])->first();
-
 
         if (!$user || !Hash::check($validatedData['password'], $user->password)) {
             return response()->json([
@@ -54,20 +68,23 @@ class AuthController extends Controller
                 'success' => false,
                 'error' => [
                     'code' => 'USER_INACTIVE',
-                    'message' => 'حساب المستخدم غير مفعل',
+                    'message' => 'حساب المستخدم غير مفعل !',
                 ],
             ], 403);
         }
 
         $token = $user->createToken('api-token')->plainTextToken;
 
+        $user->load('role');
+
         return response()->json([
             'success' => true,
             'data' => [
-                'user' => $user,
+                'user' => $user->load('role'),
                 'token' => $token,
                 'role' => $user->role,
                 'expires_in' => 86400,
+                'permissions'=>$user->role ? $user->role->permissions->pluck('name') : [],
             ],
             'message' => 'Login successful',
         ]);

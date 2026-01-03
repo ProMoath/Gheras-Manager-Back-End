@@ -51,7 +51,7 @@ class RegisterRequest extends FormRequest
         ];
 
     }
-    public function messages()
+    public function messages():array
     {
         return [
             'name.required' => 'يجب إدخال إسم المستخدم!',

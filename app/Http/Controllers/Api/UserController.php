@@ -18,12 +18,12 @@ class UserController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth:sanctum'/*, ['except' => ['login', 'register']]*/);
+        $this->middleware('auth:sanctum'/*,add this or no ['except' => ['login', 'register']]*/);
     }
 
     public function index(Request $request)
     {
-        $this->authorize('view-any', User::class);
+        $this->authorize('view-any'/*check viewAny or view-any*/, User::class);
         $query = User::query();
 
         // Filtering
@@ -113,7 +113,7 @@ class UserController extends Controller
 
         $validatedData = $request->validate([
             'name' => 'nullable|string|min:2|max:255',
-            'email' => ['nullable', 'email', Rule::unique('users')->ignore($user->id)], // تجاهل الإيميل الحالي للمستخدم
+            'email' => 'nullable | email |', Rule::unique('users')->ignore($user->id), // ignore current email for the user
             'password' => 'nullable|string|min:8|confirmed',
             'role_id' => 'nullable|exists:roles,id',
             'status' => 'nullable|boolean',
@@ -129,11 +129,13 @@ class UserController extends Controller
             'experience_years' => 'nullable | integer| min:0| max:50',
 
         ]);
-        if (isset($validatedData['password'])) {
+        $user->update($validatedData);
+
+        if (isset($validatedData['password']))
             $validatedData['password'] = Hash::make($validatedData['password']);
-        } else {
+        else
             unset($validatedData['password']); // ضمان عدم تحديث الباسورد بـ null
-        }
+
 
         if(isset($validatedData['teams']))
             $user->teams()->sync($validatedData['teams']);
@@ -160,7 +162,7 @@ class UserController extends Controller
         } catch(\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => $e->getMessage() // الرسالة التي وضعتَها في المودل ستظهر هنا
+                'message' => $e->getMessage() // Message in the model will appear here
             ], 400);
         }
     }

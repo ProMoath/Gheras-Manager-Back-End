@@ -11,7 +11,7 @@ class LoginRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,6 +24,13 @@ class LoginRequest extends FormRequest
         return [
             'email' => 'required|email',
             'password' => 'required|string',
+        ];
+    }
+    public function messages():array
+    {
+        return [
+            'email.required' => 'يجب إدخال البريد الإلكتروني',
+            'password.required' => 'يجب إدخال كمة المرور',
         ];
     }
 }

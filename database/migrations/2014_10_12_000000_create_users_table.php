@@ -27,7 +27,7 @@ return new class extends Migration
             $table->longText('job_description')->nullable();
             $table->boolean('status')->default(true)->nullable();
             $table->string('password');
-
+            //foreign id
             $table->foreignId('role_id')->default(Role::volunteer)->constrained('roles')->onDelete('restrict');
 
             $table->decimal('weekly_hours', 5, 2)->unsigned()->nullable();

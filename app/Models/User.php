@@ -89,16 +89,16 @@ class User extends Authenticatable implements JWTSubject
     }
 
     // Accessors
-    public function scopeAdmin($query)
+    public function isAdmin($query)
     {
         return $query->where('role_id',Role::admin);
     }
-    public function scopeSupervisor($query)
+    public function isSupervisor($query)
     {
         return $query->where('role_id',Role::supervisor);
     }
 
-    public function scopeVolunteer($query)
+    public function isVolunteer($query)
     {
         return $query->where('role_id',Role::volunteer);
     }

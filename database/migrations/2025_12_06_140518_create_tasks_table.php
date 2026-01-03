@@ -42,6 +42,7 @@ return new class extends Migration
             $table->index('status');
             $table->index('priority');
             $table->index('project_id');
+            $table->index('team_id');
             $table->index('assignee_id');
             $table->index('created_by');
             $table->index('due_date');

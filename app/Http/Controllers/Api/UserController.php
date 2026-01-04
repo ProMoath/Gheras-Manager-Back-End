@@ -113,7 +113,7 @@ class UserController extends Controller
 
         $validatedData = $request->validate([
             'name' => 'nullable|string|min:2|max:255',
-            'email' => 'nullable | email |', Rule::unique('users')->ignore($user->id), // ignore current email for the user
+            'email' => ['nullable' , 'email', Rule::unique('users')->ignore($user->id)], // ignore current email for the user
             'password' => 'nullable|string|min:8|confirmed',
             'role_id' => 'nullable|exists:roles,id',
             'status' => 'nullable|boolean',

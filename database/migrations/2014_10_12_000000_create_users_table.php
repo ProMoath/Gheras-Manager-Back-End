@@ -23,10 +23,11 @@ return new class extends Migration
            // $table->enum('role', ['admin', 'supervisor', 'volunteer'])->default('volunteer');
             $table->integer('experience_years')->nullable();
             $table->text('experience')->nullable();
-            $table->string('job_title')->nullable();
+            $table->string('job_field')->nullable();
             $table->longText('job_description')->nullable();
             $table->boolean('status')->default(true)->nullable();
             $table->string('password');
+            $table->timestamp('last_login_at')->nullable();
             //foreign id
             $table->foreignId('role_id')->default(Role::volunteer)->constrained('roles')->onDelete('restrict');
 

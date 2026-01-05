@@ -52,7 +52,7 @@ class UserPolicy
      */
     public function restore(User $user, User $model): bool
     {
-
+        return $user->isAdmin($user) || $user->isSupervisor($user);
     }
 
     /**

@@ -14,8 +14,9 @@ class Task extends Model
     use HasFactory;
     protected $fillable = [
         'title', 'description', 'status', 'priority', 'due_date',
-        'type','team_id', 'project_id', 'assignee_id','parent_task_id',
-        'started_at', 'completed_at', 'work_hours'
+        'type', 'team_id', 'project_id', 'assignee_id', 'parent_task_id',
+        'started_at', 'completed_at', 'work_hours',
+        'created_by'
     ];
 
     // casting

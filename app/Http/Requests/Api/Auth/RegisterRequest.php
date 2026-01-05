@@ -40,7 +40,7 @@ class RegisterRequest extends FormRequest
             'weekly_hours' => ['nullable', 'numeric', 'min:0', 'max:168'],
             'telegram_id' => ['nullable', 'string', 'min:2', 'max:50'],
 
-            'job_title' => ['nullable', 'string', 'max:255'],
+            'job_field' => ['nullable', 'string', 'max:255'],
             'job_description' => ['nullable', 'string'],
 
             'role_id' => ['nullable', 'integer', 'exists:roles,id'],

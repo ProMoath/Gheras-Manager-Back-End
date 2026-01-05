@@ -117,7 +117,7 @@ class UserController extends Controller
             'password' => 'nullable|string|min:8|confirmed',
             'role_id' => 'nullable|exists:roles,id',
             'status' => 'nullable|boolean',
-            'job_title' => 'nullable|string',
+            'job_field' => 'nullable|string',
             'weekly_hours' => 'nullable|numeric',
             'teams' => 'nullable|array',
             'teams.*' => 'exists:teams,id',

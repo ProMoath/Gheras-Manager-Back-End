@@ -15,9 +15,9 @@ class RoleSeeder extends Seeder
     {
         // نستخدم createOrFirst لضمان عدم التكرار
         $roles = [
-            ['id' => 1, 'name' => 'admin', 'label' => 'مدير النظام'],
-            ['id' => 2, 'name' => 'supervisor', 'label' => 'مشرف'],
-            ['id' => 3, 'name' => 'volunteer', 'label' => 'متطوع'],
+            ['id' => 1, 'name' => 'admin'],
+            ['id' => 2, 'name' => 'supervisor'],
+            ['id' => 3, 'name' => 'volunteer'],
         ];
 
         foreach ($roles as $role) {

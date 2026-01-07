@@ -28,11 +28,11 @@ class Task extends Model
     ];
 
     // Relationships
-    public function creator(): belongsTo
+    public function creator(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');
     }
-    public function editor(): belongsTo
+    public function editor(): BelongsTo
     {
         return $this->belongsTo(User::class, 'updated_by');
     }
@@ -54,7 +54,7 @@ class Task extends Model
     }
 
     //sub tasks
-    public function parentTask(): belongsTo // Access to father from suns
+    public function parentTask(): BelongsTo // Access to father from suns
     {
         return $this->belongsTo(Task::class,'parent_task_id');
     }
@@ -62,14 +62,14 @@ class Task extends Model
     {
         return $this->hasMany(Task::class,'parent_task_id');
     }
-    public function isSubTasks(): bool
-    {
-        return $this->parent_task_id !== null;
-    }
 
     public function project(): BelongsTo
     {
         return $this->belongsTo(Project::class); //Eloquent will assume the (Project) model's foreign key on the (Tasks) table is (project_id)
+    }
+    public function isSubTasks(): bool
+    {
+        return $this->parent_task_id !== null;
     }
 
     // Status transition logic

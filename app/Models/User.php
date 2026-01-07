@@ -72,7 +72,7 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->belongsToMany(Team::class,'team_user')->withTimestamps(); // Eloquent will assume the foreign keys columns on the (team_user) Table are (team_id,user_id)
     }
-    public function createdTasks(): HasMany
+    /*public function createdTasks(): HasMany
     {
         return $this->hasMany(Task::class, 'created_by');
     }
@@ -83,7 +83,7 @@ class User extends Authenticatable implements JWTSubject
     public function updatedTasks(): HasMany
     {
         return $this->hasMany(Task::class,'updated_by');
-    }
+    }*/
 
     public function role(): BelongsTo
     {
@@ -108,7 +108,7 @@ class User extends Authenticatable implements JWTSubject
 
 
     // Events
-    protected static function booted()
+  /*  protected static function booted()
     {
         static::deleting(function (User $user) {
             // Prevent deletion if team has tasks
@@ -120,7 +120,7 @@ class User extends Authenticatable implements JWTSubject
         /*
 
         */
-    }
+    //}
     public function getJWTIdentifier()
     {
         return $this->getKey(); // return id

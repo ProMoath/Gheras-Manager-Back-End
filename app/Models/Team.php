@@ -21,11 +21,11 @@ class Team extends Model
    {
        return $this->belongsToMany(User::class,'team_user')->withTimestamps();
    }
-   public function tasks(): HasMany
+  /* public function tasks(): HasMany
    {
        return $this->hasMany(Task::class);
    }
-
+*/
     // Events
     protected static function booted()
     {

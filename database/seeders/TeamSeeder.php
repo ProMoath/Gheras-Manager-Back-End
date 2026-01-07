@@ -22,7 +22,7 @@ class TeamSeeder extends Seeder
         ];
 
         foreach ($teams as $team) {
-            Team::updateOrCreate(['id' => $team['id']], $team);
+            Team::updateOrCreate(['id' => $team['id']],$team);
         }
     }
 }

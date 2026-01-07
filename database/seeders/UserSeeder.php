@@ -53,7 +53,7 @@ class UserSeeder extends Seeder
                 'job_field' => $data['job_field'],
             ]);
 
-            $user->teams()->sync($teams); // الربط الصحيح
+            $user->teams()->sync($teams);
         }
 
     }

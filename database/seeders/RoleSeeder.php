@@ -13,7 +13,7 @@ class RoleSeeder extends Seeder
      */
     public function run(): void
     {
-        // نستخدم createOrFirst لضمان عدم التكرار
+
         $roles = [
             ['id' => 1, 'name' => 'admin'],
             ['id' => 2, 'name' => 'supervisor'],

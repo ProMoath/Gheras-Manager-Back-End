@@ -39,14 +39,14 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/teams/{team}/tasks/', [TaskController::class, 'teamTasks']);
 
     // Tasks
-    Route::apiResource('tasks', TaskController::class);
+/*    Route::apiResource('tasks', TaskController::class);
     Route::get('users/{user}/tasks', [TaskController::class, 'userTasks']);
 
     // Statistics
     Route::get('statistics',[StatisticsController::class,'index']);
     Route::get('teams/{team}/statistics', [StatisticsController::class, 'teamStats']);
     Route::get('users/{user}/statistics', [StatisticsController::class, 'userStats']);
-
+*/
 
 }
 );

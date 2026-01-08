@@ -28,13 +28,13 @@ class Team extends Model
 */
     // Events
     protected static function booted()
-    {
+    /*{
         static::deleting(function (Team $team) {
             // Prevent deletion if team has tasks
             if ($team->tasks()->exists()) {
                 throw new \Exception('Cannot delete team with existing tasks');
             }
         });
-    }
+    }*/
 
 }

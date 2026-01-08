@@ -22,8 +22,8 @@ class DatabaseSeeder extends Seeder
             RoleSeeder::class,    // 1. الرتب أولاً
             TeamSeeder::class,    // 2. الفرق
             UserSeeder::class,    // 3. المستخدمين (يرتبطون بالرتب والفرق)
-            ProjectSeeder::class, // 4. المشاريع (تحتاج مستخدمين)
-            TaskSeeder::class,    // 5. المهام (تحتاج الجميع)
+          //  ProjectSeeder::class, // 4. المشاريع (تحتاج مستخدمين)
+            //TaskSeeder::class,    // 5. المهام (تحتاج الجميع)
         ]);
     }
 }

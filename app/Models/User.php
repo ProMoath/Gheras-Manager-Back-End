@@ -6,6 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -66,14 +67,15 @@ class User extends Authenticatable
     ];
 
     // Relationships
-   /* public function teams(): BelongsToMany
-    {
-        return $this->belongsToMany(Team::class,'team_user')->withTimestamps(); // Eloquent will assume the foreign keys columns on the (team_user) Table are (team_id,user_id)
-    }*/
     public function role(): BelongsTo
     {
         return $this->belongsTo(Role::class);
     }
+    public function teams(): BelongsToMany
+    {
+        return $this->belongsToMany(Team::class,'team_user')->withTimestamps(); // Eloquent will assume the foreign keys columns on the (team_user) Table are (team_id,user_id)
+    }
+
 
     // Accessors
     public function isAdmin():bool
@@ -90,8 +92,23 @@ class User extends Authenticatable
         return $this->role_id === Role::volunteer;
     }
 
+    // Events
+    protected static function booted() :void
+    {
+        static::deleting(function (User $user) {
+            // Prevent deletion if team has tasks
+            if ($user->assignedTasks()->exists()) {
+                throw new \Exception('Cannot delete User with existing tasks');
+            }
+        });
+    }
 
-    public function getJWTIdentifier()
+        /*
+
+        */
+
+
+        public function getJWTIdentifier()
     {
         return $this->getKey(); // return id
     }

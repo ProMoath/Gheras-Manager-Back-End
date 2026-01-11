@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -39,20 +40,30 @@ class UserSeeder extends Seeder
         ];
 
         foreach ($users as $data) {
-            $teams = $data['teams']; // نحفظ الفرق جانباً
-            unset($data['teams']);  // نحذفها من مصفوفة البيانات الأساسية لأنها ليست عموداً في جدول المستخدمين
+            $teams = $data['teams'];
 
-            $user = User::updateOrCreate(['id' => $data['id']], [
+
+            $userData = [
                 'name' => $data['name'],
                 'email' => $data['email'],
                 'password' => Hash::make('12345678'),
                 'role_id' => $roleMap[$data['role']],
                 'status' => $data['status'],
                 'job_field' => $data['job_field'],
-            ]);
+//                'email_verified_at' => now(),
+            ];
 
-            $user->teams()->sync($teams);
+            // الإنشاء أو التحديث
+            $user = User::updateOrCreate(
+                ['id' => $data['id']],
+                $userData
+            );
+
+            // ربط الفرق (يجب أن يكون TeamSeeder قد عمل مسبقاً)
+            if (!empty($teams)) {
+                $user->teams()->sync($teams);
+
+            }
         }
-
     }
 }

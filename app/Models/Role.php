@@ -16,9 +16,7 @@ class Role extends Model
     protected $fillable = ['name'];
 
         //Relationships
-    public static function updateOrCreate(array $array, array $role)
-    {
-    }
+
 
     public function user(): HasMany
     {
@@ -27,6 +25,6 @@ class Role extends Model
     }
     public function permissions(): BelongsTo
     {
-        return $this->belongsTo(permissions::class); // Assuming permissions table has role_id
+        return $this->belongsTo(Permission::class); // Assuming permission table has role_id
     }
 }

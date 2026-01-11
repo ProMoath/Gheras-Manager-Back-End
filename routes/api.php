@@ -1,6 +1,9 @@
 <?php
 
 use App\Http\Controllers\Api\Auth\AuthController;
+use App\Http\Controllers\Api\Auth\StatisticsController;
+use App\Http\Controllers\Api\Auth\TaskController;
+use App\Http\Controllers\Api\Auth\TeamController;
 use App\Http\Controllers\Api\Auth\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -27,12 +30,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/auth/refresh', [AuthController::class, 'refresh']);
 
     // Users
- /*   Route::apiResource('users', UserController::class);
+    Route::apiResource('users', UserController::class);
     Route::post('/users/{user}/teams/{team}', [UserController::class, 'assignTeam']);
-    Route::delete('/users/{user}/teams/{team}', [UserController::class, 'removeTeam']);*/
+    Route::delete('/users/{user}/teams/{team}', [UserController::class, 'removeTeam']);
 
-    /* Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-     return $request->user();
- }*/
+
 
 });

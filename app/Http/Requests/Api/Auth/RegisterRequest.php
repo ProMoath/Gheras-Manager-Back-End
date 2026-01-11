@@ -45,8 +45,8 @@ class RegisterRequest extends FormRequest
             'status' => ['nullable', 'boolean'],
 
 
-            //'teams' => ['nullable', 'array'],
-         //   'teams.*' => ['integer', 'exists:teams,id'],
+            'teams' => ['nullable', 'array'],
+            'teams.*' => ['integer', 'exists:teams,id'],
         ];
     }
     public function messages():array
@@ -55,7 +55,7 @@ class RegisterRequest extends FormRequest
             'name.required' => 'يجب إدخال إسم المستخدم!',
             'email.unique' => 'البريد الإلكتروني مسجل مسبقا!ً',
             'password.confirmed' => 'تأكيد كلمة المرور غير متطابقة!',
-         //   'teams.*.exists' => 'أحد الفرق المختارة غير موجود في النظام.',
+            'teams.*.exists' => 'أحد الفرق المختارة غير موجود في النظام.',
         ];
     }
 }

@@ -73,7 +73,7 @@ class AuthController extends Controller
 
         $token = $user->createToken('api-token')->plainTextToken;
 
-        $user->load('role.permissions','teams');
+        $user->load('role.permission','teams');
 
         return response()->json([
             'success' => true,
@@ -82,7 +82,7 @@ class AuthController extends Controller
                 'token' => $token,
                 'role' => $user->role,
                 'expires_in' => 86400,
-                'permissions'=>$user->role ? $user->role->permissions->pluck('name') : [],
+                'permission'=>$user->role ? $user->role->permissions->pluck('name') : [],
 
             ],
             'message' => 'Login successful',

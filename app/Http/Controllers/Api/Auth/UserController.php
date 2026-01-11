@@ -161,7 +161,7 @@ class UserController extends Controller
             ], 400);
         }
     }
-  /*  public function assignTeam(Request $request,User $user)
+    public function assignTeam(Request $request,User $user)
     {
         $this->authorize('update',$user);
         $validatedData = $request->validate([
@@ -188,5 +188,5 @@ class UserController extends Controller
             'message' => "User removed from team successfully."
         ]);
 
-    }*/
+    }
 }

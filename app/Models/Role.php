@@ -23,8 +23,8 @@ class Role extends Model
         return $this->hasMany(User::class);//Eloquent will assume the foreign key column on the (User) model is (role_id)
 
     }
-    public function permissions(): BelongsTo
+    public function permissions(): HasMany
     {
-        return $this->belongsTo(Permission::class); // Assuming permission table has role_id
+        return $this->hasMany(Permission::class); // Assuming permission table has role_id
     }
 }

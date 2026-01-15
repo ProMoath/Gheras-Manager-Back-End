@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->timestamps();
-            $table->foreignId('permission_id')->default(null)->nullable()->constrained('permission')->OnDelete('set null');
 
             // indexed field
             $table->index('name');

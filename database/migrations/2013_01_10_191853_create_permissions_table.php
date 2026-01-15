@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->timestamps();
+            $table->foreignId('role_id')->default(null)->nullable()->constrained('roles')->OnDelete('set null');
+
         });
     }
 

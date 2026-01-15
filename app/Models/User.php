@@ -54,7 +54,6 @@ class User extends Authenticatable
      * @var array<string, string>
      */
     protected $casts = [
-        //'email_verified_at' => 'datetime',
         'last_login_at' => 'datetime',
         'password' => 'hashed',
         'status' => 'boolean',
@@ -82,12 +81,12 @@ class User extends Authenticatable
     {
         return $this->role_id === Role::admin;
     }
-    public function isSupervisor($query):bool
+    public function isSupervisor():bool
     {
         return $this->role_id === Role::supervisor;
     }
 
-    public function isVolunteer($query):bool
+    public function isVolunteer():bool
     {
         return $this->role_id === Role::volunteer;
     }
@@ -95,27 +94,12 @@ class User extends Authenticatable
     // Events
     protected static function booted() :void
     {
+        // Prevent deletion if team has tasks
         static::deleting(function (User $user) {
-            // Prevent deletion if team has tasks
             if ($user->assignedTasks()->exists()) {
                 throw new \Exception('Cannot delete User with existing tasks');
             }
         });
-    }
-
-        /*
-
-        */
-
-
-        public function getJWTIdentifier()
-    {
-        return $this->getKey(); // return id
-    }
-
-    public function getJWTCustomClaims()
-    {
-        return []; // if we want additional data in the token
     }
 
 }

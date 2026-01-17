@@ -1,10 +1,7 @@
 <?php
 
-namespace App\Models;
-
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+namespace App\Models;use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Role extends Model
@@ -15,16 +12,9 @@ class Role extends Model
     public const volunteer = 3;
     protected $fillable = ['name'];
 
-        //Relationships
-
-
     public function user(): HasMany
     {
-        return $this->hasMany(User::class);//Eloquent will assume the foreign key column on the (User) model is (role_id)
+        return $this->hasMany(User::class);
+    }
 
-    }
-    public function permissions(): HasMany
-    {
-        return $this->hasMany(Permission::class); // Assuming permission table has role_id
-    }
 }

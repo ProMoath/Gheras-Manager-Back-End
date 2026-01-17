@@ -22,7 +22,7 @@ class UserController extends Controller
     public function index(Request $request)
     {
         $this->authorize('viewAny', User::class);
-        $query = User::query();
+        $query = User::query()->with('role');// Eager loading
 
         // Filtering
         if($request->filled('role_id'))
@@ -92,7 +92,7 @@ class UserController extends Controller
     {
         $this->authorize('view', $user);
 
-        $user->load('teams');
+        $user->load('teams','role');
         return response()->json([
             'success' => true,
             'data' => $user,
@@ -124,11 +124,10 @@ class UserController extends Controller
             'experience_years' => 'nullable | integer| min:0| max:50',
 
         ]);
-
-        if (isset($validatedData['password']))
+        if($request->filled('password'))
             $validatedData['password'] = Hash::make($validatedData['password']);
         else
-            unset($validatedData['password']); // ضمان عدم تحديث الباسورد بـ null
+            unset($validatedData['password']);// إزالة الحقل حتى لا يتم تحديثه بقيمة فارغة
 
         $user->update($validatedData);
 
@@ -176,7 +175,7 @@ class UserController extends Controller
     }
     public function removeTeam(Request $request,User $user)
     {
-        $this->authorize('update',$user);
+        $this->authorize('delete',$user);
 
         $validatedData = $request->validate([
             'team_id' => 'required|integer|exists:teams,id',
@@ -188,5 +187,20 @@ class UserController extends Controller
             'message' => "User removed from team successfully."
         ]);
 
+    }
+
+    public function toggleStatus(User $user)
+    {
+        $this->authorize('update',$user);
+
+        $user->status =!$user->status;
+        $user->save();
+
+        $statusText = $user->status ? 'تفعيل' : 'تعطيل';
+        return response()->json([
+            'success' => true,
+            'message' => "It has been {$statusText} successfully. ",
+            'data' => ['status' => $user->status]
+        ]);
     }
 }

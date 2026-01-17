@@ -15,8 +15,6 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->timestamps();
-
-            // indexed field
             $table->index('name');
         });
     }

@@ -76,6 +76,7 @@ class User extends Authenticatable
     }
 
 
+
     // Accessors
     public function isAdmin():bool
     {
@@ -91,15 +92,6 @@ class User extends Authenticatable
         return $this->role_id === Role::volunteer;
     }
 
-    // Events
-    protected static function booted() :void
-    {
-        // Prevent deletion if team has tasks
-        static::deleting(function (User $user) {
-            if ($user->assignedTasks()->exists()) {
-                throw new \Exception('Cannot delete User with existing tasks');
-            }
-        });
-    }
+
 
 }

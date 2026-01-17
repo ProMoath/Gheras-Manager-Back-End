@@ -11,6 +11,7 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Laravel\Sanctum\PersonalAccessToken;
 use Throwable;
 
 class AuthController extends Controller
@@ -32,19 +33,9 @@ class AuthController extends Controller
                 if (isset($validatedData['teams']))
                     $user->teams()->attach($validatedData['teams']);
 
-
                 $token = $user->createToken('auth_token')->plainTextToken;
                 return compact('user', 'token');
             });
-        } catch (Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'An error occurred while signing up',
-                'error' => $e->getMessage(),
-            ],500);
-        }
-
-
             $result['user']->load(['role', 'teams']);
 
             return response()->json([
@@ -56,6 +47,15 @@ class AuthController extends Controller
                 ],
                 'message' => 'user signup successfully',
             ], 201);
+        } catch (Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'An error occurred while signing up',
+                'error' => $e->getMessage(),
+            ],500);
+        }
+
+
 
     }
 
@@ -86,24 +86,24 @@ class AuthController extends Controller
 
         $token = $user->createToken('api-token')->plainTextToken;
 
-        $user->load('role.permission','teams');
+        $user->load('role','teams');
 
         return response()->json([
             'success' => true,
             'data' => [
                 'user' => $user->load('role'),
                 'token' => $token,
-                'role' => $user->role,
+                'role' => $user->role->name ?? Role::volunteer,
                 'expires_in' => 86400,
-                'permission'=>$user->role ? $user->role->permissions->pluck('name') : [],
-
             ],
             'message' => 'Login successful',
         ]);
     }
     public function logout(Request $request)
     {
-        $request->user()->currentAccessToken()->delete();
+        /** @var PersonalAccessToken $token */
+           $token = $request->user()->currentAccessToken();
+           $token->delete();
 
         return response()->json([
             'success' => true,

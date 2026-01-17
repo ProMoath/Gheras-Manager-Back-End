@@ -24,4 +24,5 @@ class Team extends Model
         return $this->belongsToMany(User::class,'team_user')->withTimestamps();
     }
 
+
 }

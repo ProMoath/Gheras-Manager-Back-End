@@ -1,5 +1,10 @@
 <?php
 
+use App\Http\Controllers\Api\Auth\AuthController;
+use App\Http\Controllers\Api\Auth\StatisticsController;
+use App\Http\Controllers\Api\Auth\TaskController;
+use App\Http\Controllers\Api\Auth\TeamController;
+use App\Http\Controllers\Api\Auth\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -14,6 +19,21 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+// Public routes
+Route::post('/auth/register', [AuthController::class, 'register']);
+Route::post('/auth/login', [AuthController::class, 'login']);
+
+// Protected routes
+Route::middleware('auth:sanctum')->group(function () {
+    // Auth
+    Route::post('/auth/logout', [AuthController::class, 'logout']);
+    Route::post('/auth/refresh', [AuthController::class, 'refresh']);
+
+    // Users
+    Route::apiResource('users', UserController::class);
+    Route::post('/users/{user}/teams', [UserController::class, 'assignTeam']);
+    Route::delete('/users/{user}/teams', [UserController::class, 'removeTeam']);
+    Route::patch('/users/{user}/status', [UserController::class, 'toggleStatus']);
+
+
 });

@@ -31,9 +31,30 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Users
     Route::apiResource('users', UserController::class);
+    Route::post('/users/create', [UserController::class,'store']);
     Route::post('/users/{user}/teams', [UserController::class, 'assignTeam']);
+    Route::delete('/users]{user}',[UserController::class,'destroy']);
     Route::delete('/users/{user}/teams', [UserController::class, 'removeTeam']);
+    Route::patch('/users/{user}/update', [UserController::class, 'update']);
     Route::patch('/users/{user}/status', [UserController::class, 'toggleStatus']);
 
+    // Teams
+    Route::apiResource('teams', TeamController::class);
+    Route::post('/teams/create', [TeamController::class, 'store']);
+    Route::delete('/teams/{team}/', [TeamController::class, 'destroy']);
+    Route::patch('/teams/{team}/update', [TeamController::class, 'update']);
+    Route::get('/teams/{team}/members', [TeamController::class, 'members']);
+
+    // Tasks
+    Route::apiResource('tasks', TaskController::class);
+    Route::get('/users/{user}/tasks', [TaskController::class, 'userTasks']);
+    Route::patch('/tasks/{task}/status', [TaskController::class, 'updateStatus']);
+    Route::get('/teams/{team}/tasks', [TaskController::class, 'teamTasks']);
+    Route::post('/tasks/{task}/assign', [TaskController::class, 'assignToUser']);
+
+    // Statistics
+    Route::get('/statistics', [StatisticsController::class, 'index']);
+    Route::get('/teams/{team}/statistics', [StatisticsController::class, 'teamStats']);
+    Route::get('/users/{user}/statistics', [StatisticsController::class, 'userStats']);
 
 });

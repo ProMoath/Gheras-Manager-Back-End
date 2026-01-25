@@ -91,7 +91,7 @@ class AuthController extends Controller
         return response()->json([
             'success' => true,
             'data' => [
-                'user' => $user->load('role'),
+                'user' => $user->load('role')->id , // or ,$user->id chaeck from this
                 'token' => $token,
                 'role' => $user->role->name ?? Role::volunteer,
                 'expires_in' => 86400,

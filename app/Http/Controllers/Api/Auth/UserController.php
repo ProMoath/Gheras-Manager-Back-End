@@ -203,4 +203,8 @@ class UserController extends Controller
             'data' => ['status' => $user->status]
         ]);
     }
+    public function getProfile()
+    {
+
+    }
 }

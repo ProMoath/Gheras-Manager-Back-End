@@ -1,8 +1,6 @@
 <?php
 
 use App\Http\Controllers\Api\Auth\AuthController;
-use App\Http\Controllers\Api\Auth\StatisticsController;
-use App\Http\Controllers\Api\Auth\TaskController;
 use App\Http\Controllers\Api\Auth\TeamController;
 use App\Http\Controllers\Api\Auth\UserController;
 use Illuminate\Http\Request;
@@ -35,5 +33,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/users/{user}/teams', [UserController::class, 'removeTeam']);
     Route::patch('/users/{user}/status', [UserController::class, 'toggleStatus']);
 
+    // Teams
+    Route::apiResource('teams', TeamController::class);
+    Route::get('/teams/{team}/members', [TeamController::class, 'members']);
 
 });

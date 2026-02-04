@@ -36,4 +36,13 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::patch('/users/{user}/status', [UserController::class, 'toggleStatus']);
 
 
+    // Tasks
+    Route::apiResource('tasks', TaskController::class);
+    Route::get('/users/{user}/tasks', [TaskController::class, 'userTasks']);
+    Route::patch('/tasks/{task}/status', [TaskController::class, 'updateStatus']);
+    Route::get('/teams/{team}/tasks', [TaskController::class, 'teamTasks']);
+    Route::post('/tasks/{task}/assign', [TaskController::class, 'assignToUser']);
+    Route::delete('/tasks/{task}/assign', [TaskController::class, 'removeFromUser']);
+
+
 });

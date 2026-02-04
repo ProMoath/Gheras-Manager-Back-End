@@ -74,7 +74,18 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Team::class,'team_user')->withTimestamps(); // Eloquent will assume the foreign keys columns on the (team_user) Table are (team_id,user_id)
     }
-
+    public function createdTasks(): HasMany
+    {
+        return $this->hasMany(Task::class, 'created_by');
+    }
+    public function assignedTasks(): BelongsToMany
+    {
+        return $this->belongsToMany(Task::class,'task_user')->withTimestamps();
+    }
+    public function updatedTasks(): HasMany
+    {
+        return $this->hasMany(Task::class,'updated_by');
+    }
 
 
     // Accessors
@@ -92,6 +103,16 @@ class User extends Authenticatable
         return $this->role_id === Role::volunteer;
     }
 
+    // Events
+    protected static function booted() :void
+    {
+        // Prevent deletion if team has tasks
+        static::deleting(function (User $user) {
+            if ($user->assignedTasks()->exists()) {
+                throw new \Exception('Cannot delete User with existing tasks');
+            }
+        });
 
+    }
 
 }

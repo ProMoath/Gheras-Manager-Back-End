@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('teams', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->text('slug')->unique();
+            $table->string('slug')->unique();
             $table->integer('members_count')->default(0);
             $table->timestamps();
 

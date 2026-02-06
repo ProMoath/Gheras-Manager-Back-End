@@ -3,8 +3,11 @@
 namespace App\Http\Controllers\Api\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\Auth\TeamRequest;
 use App\Models\Team;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class TeamController extends Controller
 {
@@ -49,21 +52,46 @@ class TeamController extends Controller
 
     /**
      * Store a newly created resource in storage.
+     * @throws \Throwable
      */
-    public function store(Request $request)
+    public function store(TeamRequest $request)
     {
         $this->authorize('create', Team::class);
-        $data=$this->validate($request, [
-            'name' => 'required|string|min:2',
-            'slug' => 'required|string|min:2|unique:teams,slug',
-            'members_count' => 'required|integer'
-        ]);
-        $team=Team::create($request->$data);
+        $validatedData=$request->validated();
+
+        // 2. Slug Generation logic
+        $slug = Str::slug($validatedData['name']);
+        if (Team::where('slug', $slug)->exists())
+            $slug = $slug . '-' . time();
+
+        try {
+           $team =  DB::transaction(function () use ($validatedData, $request, $slug) {
+                $newTeam = Team::create([
+                    'name' => $validatedData['name'],
+                    'slug' => $slug,
+                    'members_count' => 1,
+                ]);
+                $newTeam->users()->attach(auth()->id(),[
+                    'role' => 'member',
+                    'created_at' => now(),
+                    'updated_at' => now(),
+               ]);
+                return $newTeam;
+            });
+
         return response()->json([
             'success' => true,
             'data' => $team,
             'message' => 'Team created successfully'
         ],201);
+
+        }catch (\Exception $e){
+            return response()->json([
+                'success' => false,
+                'message' =>'An error occurred while trying to create team',
+                'error' => $e->getMessage()
+            ],500);
+        }
     }
 
     /**
@@ -72,7 +100,11 @@ class TeamController extends Controller
     public function show(Team $team)
     {
         $this->authorize('view', $team);
-        $data=$team->load('tasks','users');
+        $data=$team->load(['users','tasks' => function ($query)
+    {
+        $query->limit(5); // fetch just lastest 5 task for lighten the load
+    }
+    ]);
         return response()->json([
             'success' => true,
             'data' => $data
@@ -82,17 +114,17 @@ class TeamController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Team $team)
+    public function update(TeamRequest $request, Team $team)
     {
         $this->authorize('update', $team);
-        $validatedData = $request->validate([
-            'name' => 'string|min:2|max:255',
-            'slug' => 'string|min:2|max:255| unique:teams,slug,'.$team->id,
-        ]);
+        $validatedData = $request->validated();
+        if (isset($validatedData['name'])) {
+            $validatedData['slug'] = Str::slug($validatedData['name']); // if name changed, slug changes too;
+        }
         $team->update($validatedData);
         return response()->json([
             'success' => true,
-            'data' => $team->load(['tasks','users']),
+            'data' => $team->load(['tasks','users'])->fresh(),
             'message' => "Team updated successfully."
         ]);
     }
@@ -119,11 +151,12 @@ class TeamController extends Controller
 
     public function members(Team $team)
     {
-        $this->authorize('viewAny', $team);
-        $members=$team->users();
+        $this->authorize('view', $team);
+        $members=$team->users()->withPivot('role')->paginate(20);
         return response()->json([
             'success' => true,
-            'data' => $team->load('users'),$members
+            'data' => $team->load(['users',$members]),
+            'message' => "Team members retrieved successfully."
         ]);
     }
 }

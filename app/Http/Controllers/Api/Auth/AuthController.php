@@ -86,7 +86,7 @@ class AuthController extends Controller
 
         $token = $user->createToken('api-token')->plainTextToken;
 
-        $user->load('role','teams');
+        $user->load(['role','teams']);
 
         return response()->json([
             'success' => true,
@@ -113,7 +113,7 @@ class AuthController extends Controller
     public function refresh(Request $request)
     {
         $user = $request->user();
-        $user->tokens()->delete();
+        $user->currentAccessToken()->delete();
         $token = $user->createToken('api-token')->plainTextToken;
 
         return response()->json([

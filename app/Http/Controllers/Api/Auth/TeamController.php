@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\Auth\TeamRequest;
 use App\Models\Team;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class TeamController extends Controller
@@ -32,7 +31,6 @@ class TeamController extends Controller
 
         $query->orderBy('created_at', 'desc');
 
-        // Pagination
         $limit = min($request->get('limit', 20), 100);
         $teams = $query->paginate($limit);
 
@@ -58,41 +56,21 @@ class TeamController extends Controller
     {
         $this->authorize('create', Team::class);
         $validatedData=$request->validated();
-
-        // 2. Slug Generation logic
         $slug = Str::slug($validatedData['name']);
         if (Team::where('slug', $slug)->exists())
             $slug = $slug . '-' . time();
-
-        try {
-           $team =  DB::transaction(function () use ($validatedData, $request, $slug) {
-                $newTeam = Team::create([
-                    'name' => $validatedData['name'],
-                    'slug' => $slug,
-                    'members_count' => 1,
-                ]);
-                $newTeam->users()->attach(auth()->id(),[
-                    'role' => 'member',
-                    'created_at' => now(),
-                    'updated_at' => now(),
-               ]);
-                return $newTeam;
-            });
-
+        $team = Team::create([
+            'name' => $validatedData['name'],
+            'slug' => $slug,
+            'members_count' => 0,
+            ]);
         return response()->json([
             'success' => true,
             'data' => $team,
             'message' => 'Team created successfully'
         ],201);
-
-        }catch (\Exception $e){
-            return response()->json([
-                'success' => false,
-                'message' =>'An error occurred while trying to create team',
-                'error' => $e->getMessage()
-            ],500);
-        }
     }
+
 
     /**
      * Display the specified resource.
@@ -102,7 +80,7 @@ class TeamController extends Controller
         $this->authorize('view', $team);
         $data=$team->load(['users','tasks' => function ($query)
     {
-        $query->limit(5); // fetch just lastest 5 task for lighten the load
+        $query->limit(5);
     }
     ]);
         return response()->json([
@@ -119,12 +97,12 @@ class TeamController extends Controller
         $this->authorize('update', $team);
         $validatedData = $request->validated();
         if (isset($validatedData['name'])) {
-            $validatedData['slug'] = Str::slug($validatedData['name']); // if name changed, slug changes too;
+            $validatedData['slug'] = Str::slug($validatedData['name']);
         }
         $team->update($validatedData);
         return response()->json([
             'success' => true,
-            'data' => $team->load(['tasks','users'])->fresh(),
+            'data' => $team->load('users')->fresh(),
             'message' => "Team updated successfully."
         ]);
     }
@@ -155,7 +133,13 @@ class TeamController extends Controller
         $members=$team->users()->withPivot('role')->paginate(20);
         return response()->json([
             'success' => true,
-            'data' => $team->load(['users',$members]),
+            'data' => $members->items(),
+            'pagination' => [
+                'total' => $members->total(),
+                'per_page' => $members->perPage(),
+                'current_page' => $members->currentPage(),
+                'last_page' => $members->lastPage(),
+            ],
             'message' => "Team members retrieved successfully."
         ]);
     }

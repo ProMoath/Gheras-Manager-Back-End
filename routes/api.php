@@ -32,6 +32,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/users/{user}/teams', [UserController::class, 'assignTeam']);
     Route::delete('/users/{user}/teams', [UserController::class, 'removeTeam']);
     Route::patch('/users/{user}/status', [UserController::class, 'toggleStatus']);
+    Route::get('/users/{user}/profile', [UserController::class, 'getProfile']);
 
     // Teams
     Route::apiResource('teams', TeamController::class);

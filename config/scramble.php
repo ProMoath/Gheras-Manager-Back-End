@@ -21,29 +21,15 @@ return [
     'export_path' => 'api.json',
 
     'info' => [
-        /*
-         * API version.
-         */
-        'version' => env('API_VERSION', '0.0.1'),
-
-        /*
-         * Description rendered on the home page of the API documentation (`/docs/api`).
-         */
-        'description' => '',
+        'version' => env('API_VERSION', '1.0.0'),
+        'description' => 'توثيق واجهة برمجة التطبيقات (Rest API) لمشروع إدارة مهام غراس.',
     ],
 
     /*
      * Customize Stoplight Elements UI
      */
     'ui' => [
-        /*
-         * Define the title of the documentation's website. App name is used when this config is `null`.
-         */
-        'title' => null,
-
-        /*
-         * Define the theme of the documentation. Available options are `light`, `dark`, and `system`.
-         */
+        'title' => 'تطبيق منصة غراس',
         'theme' => 'light',
 
         /*

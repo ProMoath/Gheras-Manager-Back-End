@@ -1,30 +1,27 @@
 <?php
 
-// use App\Http\Controllers\Api\Auth\AuthController;
-// use App\Http\Controllers\Api\Auth\StatisticsController;
-// use App\Http\Controllers\Api\Auth\TaskController;
-// use App\Http\Controllers\Api\Auth\TeamController;
-// use App\Http\Controllers\Api\Auth\UserController;
-namespace App\Http\Controllers\Api\V1;
-use Illuminate\Http\Request;
+use App\Http\Controllers\Api\V1\AuthController;
+use App\Http\Controllers\Api\V1\UserController;
 use Illuminate\Support\Facades\Route;
 
+Route::prefix('v1')->group(function () {
+    // Public routes
+    Route::prefix('auth')->group(function () {
+        Route::post('register', [AuthController::class, 'register']);
+        Route::post('login',    [AuthController::class, 'login']);
+    });
 
-// Public routes
-Route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers\Api\V1'], function () {
-Route::post('/auth/register', [AuthController::class, 'register']);
-Route::post('/auth/login', [AuthController::class, 'login']);
-});
-
-// Protected routes
-Route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers\Api\V1', 'middleware' => ['auth:sanctum']], function () {
-    // Auth
-    Route::post('/auth/logout', [AuthController::class, 'logout']);
-    Route::post('/auth/refresh', [AuthController::class, 'refresh']);
-
-    // Users
-    Route::apiResource('users', UserController::class);
-    Route::post('/users/{user}/teams', [UserController::class, 'assignTeam']);
-    Route::delete('/users/{user}/teams', [UserController::class, 'removeTeam']);
-    Route::patch('/users/{user}/status', [UserController::class, 'toggleStatus']);
+    // Protected routes
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::prefix('auth')->group(function () {
+            Route::post('logout',  [AuthController::class, 'logout']);
+            Route::post('refresh', [AuthController::class, 'refresh']);
+        });
+        Route::apiResource('users', UserController::class);
+        Route::prefix('users/{user}')->group(function () {
+            Route::post(  'teams',  [UserController::class, 'assignTeam']);
+            Route::delete('teams',  [UserController::class, 'removeTeam']);
+            Route::patch( 'status', [UserController::class, 'toggleStatus']);
+        });
+    });
 });

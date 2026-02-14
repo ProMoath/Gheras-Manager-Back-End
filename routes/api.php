@@ -1,42 +1,29 @@
 <?php
 
-use App\Http\Controllers\Api\Auth\AuthController;
-use App\Http\Controllers\Api\Auth\ProjectController;
-use App\Http\Controllers\Api\Auth\StatisticsController;
-use App\Http\Controllers\Api\Auth\TaskController;
-use App\Http\Controllers\Api\Auth\TeamController;
-use App\Http\Controllers\Api\Auth\UserController;
-use Illuminate\Http\Request;
+use App\Http\Controllers\Api\V1\AuthController;
+use App\Http\Controllers\Api\V1\ProjectController;
+use App\Http\Controllers\Api\V1\UserController;
 use Illuminate\Support\Facades\Route;
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "api" middleware group. Make something great!
-|
-*/
+Route::prefix('v1')->group(function () {
+    // Public routes
+    Route::prefix('auth')->group(function () {
+        Route::post('register', [AuthController::class, 'register']);
+        Route::post('login',    [AuthController::class, 'login']);
+    });
 
-// Public routes
-Route::post('/auth/register', [AuthController::class, 'register']);
-Route::post('/auth/login', [AuthController::class, 'login']);
-
-// Protected routes
-Route::middleware('auth:sanctum')->group(function () {
-    // Auth
-    Route::post('/auth/logout', [AuthController::class, 'logout']);
-    Route::post('/auth/refresh', [AuthController::class, 'refresh']);
-
-    // Users
-    Route::apiResource('users', UserController::class);
-    Route::post('/users/{user}/teams', [UserController::class, 'assignTeam']);
-    Route::delete('/users/{user}/teams', [UserController::class, 'removeTeam']);
-    Route::patch('/users/{user}/status', [UserController::class, 'toggleStatus']);
-
-    // Projects
-    Route::apiResource('projects', ProjectController::class);
-
+    // Protected routes
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::prefix('auth')->group(function () {
+            Route::post('logout',  [AuthController::class, 'logout']);
+            Route::post('refresh', [AuthController::class, 'refresh']);
+        });
+        Route::apiResource('users', UserController::class);
+        Route::prefix('users/{user}')->group(function () {
+            Route::post(  'teams',  [UserController::class, 'assignTeam']);
+            Route::delete('teams',  [UserController::class, 'removeTeam']);
+            Route::patch( 'status', [UserController::class, 'toggleStatus']);
+        });
+        Route::apiResource('projects', ProjectController::class);
+    });
 });

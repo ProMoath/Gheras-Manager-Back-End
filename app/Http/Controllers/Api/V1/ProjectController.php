@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Http\Controllers\Api\Auth;
+namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Api\Auth\ProjectRequest;
+use App\Http\Requests\Api\V1\ProjectRequest;
 use App\Models\Project;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;

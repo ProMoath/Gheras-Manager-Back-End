@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\UserController;
+use App\Http\Controllers\Api\V1\TeamController;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->group(function () {
@@ -22,6 +24,10 @@ Route::prefix('v1')->group(function () {
             Route::post(  'teams',  [UserController::class, 'assignTeam']);
             Route::delete('teams',  [UserController::class, 'removeTeam']);
             Route::patch( 'status', [UserController::class, 'toggleStatus']);
+            Route::get(  'profile', [UserController::class, 'getProfile']);
         });
+    // Teams
+    Route::apiResource('teams', TeamController::class);
+    Route::get('/teams/{team}/members', [TeamController::class, 'members']);
     });
 });

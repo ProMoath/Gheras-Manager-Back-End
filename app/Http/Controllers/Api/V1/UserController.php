@@ -5,6 +5,10 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\RegisterRequest;
 use App\Http\Requests\Api\V1\UpdateUserRequest;
+<<<<<<< feature/users-teams-module
+use App\Http\Resources\UserProfileResource;
+=======
+>>>>>>> main
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -170,7 +174,10 @@ class UserController extends Controller
             'success' => true,
             'message' => "User removed from team successfully."
         ]);
+<<<<<<< feature/users-teams-module
+=======
 
+>>>>>>> main
     }
 
     public function toggleStatus(User $user)
@@ -187,4 +194,18 @@ class UserController extends Controller
             'data' => ['status' => $user->status]
         ]);
     }
+<<<<<<< feature/users-teams-module
+    public function getProfile(Request $request,User $user)
+    {
+        $this->authorize('view',$user);
+        $user =auth()->user();
+        $user->load(['teams','role']);
+        return response()->json([
+            'success' => true,
+            'data' => new UserProfileResource($user),
+            'message' => "User {$user->name} profile retrieved successfully."
+        ],200);
+    }
+=======
+>>>>>>> main
 }

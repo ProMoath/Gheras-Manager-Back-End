@@ -17,6 +17,57 @@ This repository contains the **Backend Microservice/API** for the Gheras Task Ma
 
 **Frontend Repository:** [Gheras Manager UI](https://github.com/MMansy19/Gheras-Manager)
 
+---
+
+## 🚧 Project Modules Status
+
+| Feature | Status | Description |
+| :--- | :---: | :--- |
+| **Authentication** | ✅ Done | Login, Register, Logout (Sanctum) |
+| **User Management** | ✅ Done | CRUD operations, Roles (Admin, Supervisor, Volunteer) |
+| **Team Management** | ✅ Done | Create Teams, Assign Users, Pivot Tables |
+| **Tasks & Projects** | ⏳ Pending | Disabled in this branch to focus on Core Auth |
+
+---
+
+## 🔌 API Endpoints (Core Features)
+
+### 1. Authentication
+| Method | Endpoint | Description |
+| :--- | :--- | :--- |
+| `POST` | `/api/auth/register` | Register a new user |
+| `POST` | `/api/auth/login` | Login and receive API Token |
+| `POST` | `/api/auth/logout` | Logout (Revoke Token) |
+| `POST` | `/api/auth/refresh` | Refresh API Token |
+
+### 2. Users Management
+| Method | Endpoint | Description |
+| :--- | :--- | :--- |
+| `GET` | `/api/users` | List all users (Supports params: `search`, `role_id`, `status`, `sort_by`) |
+| `GET` | `/api/users/{id}` | Get specific user details |
+| `PUT` | `/api/users/{id}` | Update user details |
+| `DELETE` | `/api/users/{id}` | Delete a user |
+| `PATCH` | `/api/users/{id}/status` | Toggle user status (Active/Inactive) |
+| `GET` | `/api/users/{id}/profile` | Get current user profile with relations |
+
+### 3. Team Assignment (User-Team)
+| Method | Endpoint | Description | Body Parameters |
+| :--- | :--- | :--- | :--- |
+| `POST` | `/api/users/{id}/teams` | Assign user to a team | `{"team_id": 1}` |
+| `DELETE` | `/api/users/{id}/teams` | Remove user from a team | `{"team_id": 1}` |
+
+### 4. Teams Management
+| Method | Endpoint | Description |
+| :--- | :--- | :--- |
+| `GET` | `/api/teams` | List all teams (Supports param: `search`, `limit`) |
+| `POST` | `/api/teams` | Create a new team |
+| `GET` | `/api/teams/{id}` | Get specific team details |
+| `PUT` | `/api/teams/{id}` | Update team details |
+| `DELETE` | `/api/teams/{id}` | Delete a team |
+| `GET` | `/api/teams/{id}/members` | Get all members of a specific team |
+
+---
+
 ## 🚀 Getting Started
 
 ### Prerequisites
@@ -28,9 +79,8 @@ This repository contains the **Backend Microservice/API** for the Gheras Task Ma
 
 1. **Clone the repository**
    ```bash
-   git clone [https://github.com/YOUR_USERNAME/Gheras-Manager-Back-End
-   .git](https://github.com/YOUR_USERNAME/gheras-backend.git)
-   cd gheras-backend
+   git clone https://github.com/ProMoath/Gheras-Manager-Back-End.git
+   cd Gheras-Manager-Back-End
 
 2. **Install Dependencies**
    ```bash

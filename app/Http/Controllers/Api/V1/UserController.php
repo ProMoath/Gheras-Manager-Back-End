@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Controllers\Api\Auth;
+namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Api\Auth\RegisterRequest;
-use App\Http\Requests\Api\Auth\UpdateUserRequest;
+use App\Http\Requests\Api\V1\RegisterRequest;
+use App\Http\Requests\Api\V1\UpdateUserRequest;
 use App\Http\Resources\UserProfileResource;
 use App\Models\Role;
 use App\Models\User;

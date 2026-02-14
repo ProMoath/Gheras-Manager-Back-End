@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Http\Controllers\Api\Auth;
+namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Api\Auth\TeamRequest;
+use App\Http\Requests\Api\V1\TeamRequest;
 use App\Models\Team;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;

@@ -85,10 +85,10 @@ class Task extends Model
     protected static function booted(): void
     {
         static::creating(callback: function ($task) {
-            if(auth()->check()) $task->created_by = Auth::id();
+            if(auth()->check()) $task->created_by = V1::id();
         });
         static::updating(callback: function ($task) {
-            if(auth()->check()) $task->updated_by = Auth::id();
+            if(auth()->check()) $task->updated_by = V1::id();
         });         // automatically add creator or updater of the task
 
         static::updating(function (Task $task) {

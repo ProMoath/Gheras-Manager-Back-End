@@ -2,6 +2,10 @@
 
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\UserController;
+//use App\Http\Controllers\Api\V1\StatisticsController;
+use App\Http\Controllers\Api\V1\TaskController;
+//use App\Http\Controllers\Api\V1\TeamController;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->group(function () {
@@ -22,6 +26,15 @@ Route::prefix('v1')->group(function () {
             Route::post(  'teams',  [UserController::class, 'assignTeam']);
             Route::delete('teams',  [UserController::class, 'removeTeam']);
             Route::patch( 'status', [UserController::class, 'toggleStatus']);
+            Route::get(   'tasks', [TaskController::class, 'userTasks']);
         });
+        Route::apiResource('tasks', TaskController::class);
+        Route::prefix('tasks/{task}')->group(function () {
+            Route::patch( 'status', [TaskController::class, 'updateStatus']);
+            Route::patch(  'assign', [TaskController::class, 'assignToUser']);
+            Route::delete( 'unassign', [TaskController::class, 'removeFromUser']);
+            Route::patch(  'team', [TaskController::class, 'assignToTeam']);
+        });
+        Route::get('/teams/{team}/tasks', [TaskController::class, 'teamTasks']);
     });
 });

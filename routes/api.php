@@ -1,48 +1,39 @@
 <?php
 
-use App\Http\Controllers\Api\Auth\AuthController;
-use App\Http\Controllers\Api\Auth\StatisticsController;
-use App\Http\Controllers\Api\Auth\TaskController;
-use App\Http\Controllers\Api\Auth\TeamController;
-use App\Http\Controllers\Api\Auth\UserController;
+use App\Http\Controllers\Api\V1\AuthController;
+use App\Http\Controllers\Api\V1\UserController;
+//use App\Http\Controllers\Api\V1\StatisticsController;
+use App\Http\Controllers\Api\V1\TaskController;
+//use App\Http\Controllers\Api\V1\TeamController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "api" middleware group. Make something great!
-|
-*/
+Route::prefix('v1')->group(function () {
+    // Public routes
+    Route::prefix('auth')->group(function () {
+        Route::post('register', [AuthController::class, 'register']);
+        Route::post('login',    [AuthController::class, 'login']);
+    });
 
-// Public routes
-Route::post('/auth/register', [AuthController::class, 'register']);
-Route::post('/auth/login', [AuthController::class, 'login']);
-
-// Protected routes
-Route::middleware('auth:sanctum')->group(function () {
-    // Auth
-    Route::post('/auth/logout', [AuthController::class, 'logout']);
-    Route::post('/auth/refresh', [AuthController::class, 'refresh']);
-
-    // Users
-    Route::apiResource('users', UserController::class);
-    Route::post('/users/{user}/teams', [UserController::class, 'assignTeam']);
-    Route::delete('/users/{user}/teams', [UserController::class, 'removeTeam']);
-    Route::patch('/users/{user}/status', [UserController::class, 'toggleStatus']);
-
-
-    // Tasks
-    Route::apiResource('tasks', TaskController::class);
-    Route::get('/users/{user}/tasks', [TaskController::class, 'userTasks']);
-    Route::patch('/tasks/{task}/status', [TaskController::class, 'updateStatus']);
-    Route::get('/teams/{team}/tasks', [TaskController::class, 'teamTasks']);
-    Route::post('/tasks/{task}/assign', [TaskController::class, 'assignToUser']);
-    Route::delete('/tasks/{task}/assign', [TaskController::class, 'removeFromUser']);
-
-
+    // Protected routes
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::prefix('auth')->group(function () {
+            Route::post('logout',  [AuthController::class, 'logout']);
+            Route::post('refresh', [AuthController::class, 'refresh']);
+        });
+        Route::apiResource('users', UserController::class);
+        Route::prefix('users/{user}')->group(function () {
+            Route::post(  'teams',  [UserController::class, 'assignTeam']);
+            Route::delete('teams',  [UserController::class, 'removeTeam']);
+            Route::patch( 'status', [UserController::class, 'toggleStatus']);
+            Route::get(   'tasks', [TaskController::class, 'userTasks']);
+        });
+        Route::apiResource('tasks', TaskController::class);
+        Route::prefix('tasks/{task}')->group(function () {
+            Route::patch( 'status', [TaskController::class, 'updateStatus']);
+            Route::post(  'assign', [TaskController::class, 'assignToUser']);
+            Route::delete('assign', [TaskController::class, 'removeFromUser']);
+        });
+        Route::get('/teams/{team}/tasks', [TaskController::class, 'teamTasks']);
+    });
 });

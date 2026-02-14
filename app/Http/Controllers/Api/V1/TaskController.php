@@ -281,7 +281,7 @@ class TaskController extends Controller
         return response()->json([
             'success' => true,
             'data' =>$data,
-            'message'=> 'Task assigned successfully',
+            'message'=> 'Task assigned to successfully',
         ]);
     }
     public function removeFromUser(Request $request,Task $task)
@@ -298,5 +298,17 @@ class TaskController extends Controller
             'message'=> 'User removed successfully',
         ]);
     }
-
+    public function assignToTeam(Request $request,Task $task)
+    {
+        $this->authorize('update', $task);
+        $request->validate(['team_id' => 'required|integer|exists:teams,id']);
+        $teamId=$request->input('team_id');
+        $task->update(['team_id'=> $teamId]);
+        $data=$task->fresh()->load(['assignees','project','team']);
+        return response()->json([
+            'success' => true,
+            'data' =>$data,
+            'message'=> 'Task assigned successfully',
+        ]);
+    }
 }

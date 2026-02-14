@@ -31,8 +31,9 @@ Route::prefix('v1')->group(function () {
         Route::apiResource('tasks', TaskController::class);
         Route::prefix('tasks/{task}')->group(function () {
             Route::patch( 'status', [TaskController::class, 'updateStatus']);
-            Route::post(  'assign', [TaskController::class, 'assignToUser']);
-            Route::delete('assign', [TaskController::class, 'removeFromUser']);
+            Route::patch(  'assign', [TaskController::class, 'assignToUser']);
+            Route::delete( 'unassign', [TaskController::class, 'removeFromUser']);
+            Route::patch(  'team', [TaskController::class, 'assignToTeam']);
         });
         Route::get('/teams/{team}/tasks', [TaskController::class, 'teamTasks']);
     });

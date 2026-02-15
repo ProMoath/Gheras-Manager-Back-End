@@ -11,17 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('team_user', function (Blueprint $table) {
+        Schema::create('task_user', function (Blueprint $table) {
+            $table->foreignId('task_id')->constrained('tasks')->onDelete('restrict');
             $table->foreignId('user_id')->constrained('users')->onDelete('restrict');
-            $table->foreignId('team_id')->constrained('teams')->onDelete('restrict');
-            $table->enum('role', ['member', 'admin'])->default('member');
             $table->timestamps();
 
             // Composite primary key
-            $table->primary(['user_id', 'team_id']);
-
-            // Indexes
-            $table->index('team_id');
+            $table->primary(['task_id', 'user_id']);
         });
     }
 
@@ -30,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('team_user');
+        Schema::dropIfExists('task_user');
     }
 };

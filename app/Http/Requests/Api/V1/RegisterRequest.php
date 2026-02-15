@@ -26,18 +26,24 @@ class RegisterRequest extends FormRequest
             'name' => ['required','string','min:2','max:255'],
             'email' => ['required','string','email','max:255','unique:users,email'],
             'password' => ['required','string','min:8','confirmed'],
+
             // Optional Fields
             'phone' => ['nullable','string','max:20'],
             'age' => ['nullable','integer','between:18,100'],
             'country' => ['nullable','string','max:255'],
-            'experience' => ['nullable','string','max:2000'],
+
+            'experience' => ['nullable'],
             'experience_years' => ['nullable','integer','min:0','max:50'],
+
             'weekly_hours' => ['nullable','numeric','min:0','max:168'],
             'telegram_id' => ['nullable','string','min:2','max:50'],
             'job_field' => ['nullable','string','max:255'],
-            'job_description' => ['nullable','string'],
+            'job_description' => ['nullable'],
+
             'role_id' => ['nullable','integer','exists:roles,id'],
             'status' => ['nullable','boolean'],
+
+
             'teams' => ['nullable','array'],
             'teams.*' => ['integer','exists:teams,id'],
         ];

@@ -23,6 +23,17 @@ class Team extends Model
     {
         return $this->belongsToMany(User::class,'team_user')->withTimestamps();
     }
-
-
+    public function tasks(): HasMany
+    {
+        return $this->hasMany(Task::class);
+    }
+    protected static function booted(): void
+    {
+        static::deleting(function (Team $team) {
+            // Prevent deletion if team has tasks
+            if ($team->tasks()->exists()) {
+                throw new \Exception('Cannot delete team with existing tasks');
+            }
+        });
+    }
 }

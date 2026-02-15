@@ -86,7 +86,6 @@ class UserController extends Controller
         ],201);
 
     }
-
     /**
      * Display the specified resource.
      */
@@ -100,7 +99,6 @@ class UserController extends Controller
             'data' => $user,
         ]);
     }
-
     /**
      * Update the specified resource in storage.
      */

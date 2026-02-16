@@ -16,15 +16,15 @@ return new class extends Migration
             $table->string('name');
             $table->text('description')->nullable();
             $table->boolean('active')->default(true);
-            $table->enum('status', ['open', 'in progress','testing','resolved'])->default('open');
-            $table->foreignId('created_by')->constrained('users');
+            $table->enum('status', ['new', 'scheduled', 'in_progress', 'issue', 'done', 'docs'])->default('new');
+            $table->foreignId('creator_id')->constrained('users');
             $table->foreignId('updated_by')->nullable()->constrained('users');
             $table->timestamps();
 
 
             //indexes columns
             $table->index('active');
-            $table->index('created_by');
+            $table->index('creator_id');
             $table->index('status');
         });
     }

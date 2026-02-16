@@ -20,12 +20,18 @@ class ProjectRequest extends FormRequest
      *
      * @return array<string, ValidationRule|array|string>
      */
+    protected function prepareForValidation() : array
+    {
+        $this->merge([
+            'status' => $this->status ?? 'new',
+        ]);
+    }
     public function rules(): array
     {
         return [
             'name' => 'required|string|min:3',
             'description' => 'nullable|string',
-            'status' => 'nullable|in:open,in progress,testing,resolved',
+            'status' => 'required|in:new,in_progress,scheduled,issue,docs,done',
             'active' => 'nullable|boolean',
         ];
     }

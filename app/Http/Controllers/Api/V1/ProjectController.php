@@ -64,8 +64,7 @@ class ProjectController extends Controller
     {
         $this->authorize('create', Project::class);
         $validatedData=$request->validated();
-        $validatedData['created_by']= auth()->id();
-        $validatedData['status'] = $validatedData['status'] ?? 'open';
+        $validatedData['creator_id']= auth()->id();
         $project=Project::create($validatedData);
         $data=$project->load(['tasks','creator']);
         return response()->json([
@@ -88,7 +87,7 @@ class ProjectController extends Controller
                 'message'=>'Project not found!',
             ],404);
         }
-        $this->authorize('view', Project::class);
+        $this->authorize('view-any', Project::class);
         $data=$project->load(['tasks','creator']);
         return response()->json([
             'success' => true,
@@ -104,8 +103,7 @@ class ProjectController extends Controller
     {
         $this->authorize('update', Project::class);
         $validatedData = $request->validated();
-        try {
-            return DB::transaction(function () use ($request, $project, $validatedData) {
+
                 if (isset($validatedData['status']) && $validatedData['status'] !== $project->status && !$project->canTransitionTo($validatedData['status'])) {
                     return response()->json([
                         'success' => false,
@@ -120,30 +118,29 @@ class ProjectController extends Controller
                     'success' => true,
                     'data' => $project->load(['tasks', 'tasks.parentTask', 'tasks.subTask','creator'])->fresh(),
                     'message' => "Project updated successfully."
-                ], 201);
-            });
-        } catch (\Exception $exception) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Project update failed',
-                'errors' => $exception->getMessage(),
-                'debug' => config('app.debug') ? $exception->getMessage() : null
-            ], 500);
-        }
+                ], 200);
     }
-
 
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(Project $project)
     {
-        $this->authorize('delete', $project);
-        $project->delete();
-        return response()->json([
-            'success' => true,
-            'message' => "Project deleted successfully."
-        ]);
+        try {
+            $this->authorize('delete', $project);
+            $project->delete();
+            return response()->json([
+                'success' => true,
+                'message' => "Project deleted successfully."
+            ]);
+        }catch (\Exception $exception){
+            return response()->json([
+                'success' => false,
+                'message' => "Project delete failed",
+                'errors' => $exception->getMessage(),
+                'debug' => config('app.debug') ? $exception->getMessage() : null
+            ]);
+        }
 
     }
 }

@@ -16,7 +16,7 @@ class Project extends Model
         'description',
         'active',
         'status',
-        'created_by',
+        'creator_id',
         'updated_by',
     ];
     protected $casts = [
@@ -28,7 +28,7 @@ class Project extends Model
     }
     public function creator(): belongsTo
     {
-        return $this->belongsTo(User::class, 'created_by');
+        return $this->belongsTo(User::class, 'creator_id');
     }
     public function editor(): BelongsTo
     {
@@ -37,10 +37,12 @@ class Project extends Model
     public function canTransitionTo(string $newStatus): bool
     {
         $transitions=[
-            'open' => ['in_progress'],
-          'in_progress' => ['testing', 'open','resolved'],
-            'testing' => ['resolved', 'in_progress'],
-            'resolved' => ['in_progress', 'testing'],
+            'new' => ['scheduled', 'in_progress', 'done', 'docs', 'issue'],
+            'scheduled' => ['in_progress', 'done', 'docs', 'issue'],
+            'in_progress' => ['done', 'docs', 'issue'],
+            'issue' => ['in_progress', 'done', 'docs'],
+            'done' => ['in_progress','in_progress'],
+            'docs' => ['in_progress','in_progress','done'],
         ];
         return in_array($newStatus, $transitions[$this->status] ?? []);
     }
@@ -50,7 +52,7 @@ class Project extends Model
     {
         static::creating(function ($project) {
             if (auth()->check()) {
-                $project->created_by = Auth::id();
+                $project->creator_id = Auth::id();
             }
         });
         static::updating(function ($project) {

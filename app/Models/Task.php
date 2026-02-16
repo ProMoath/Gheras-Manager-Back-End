@@ -16,7 +16,7 @@ class Task extends Model
         'title', 'description', 'status', 'priority', 'due_date',
         'type', 'team_id', 'project_id', 'assignee_id', 'parent_task_id',
         'started_at', 'completed_at', 'work_hours','status',
-        'created_by'
+        'creator_id'
     ];
 
     // casting
@@ -29,7 +29,7 @@ class Task extends Model
 
     public function creator(): belongsTo
     {
-        return $this->belongsTo(User::class, 'created_by');
+        return $this->belongsTo(User::class, 'creator_id');
     }
     public function editor(): belongsTo
     {
@@ -77,8 +77,8 @@ class Task extends Model
             'scheduled' => ['in_progress', 'done', 'docs', 'issue'],
             'in_progress' => ['done', 'docs', 'issue'],
             'issue' => ['in_progress', 'done', 'docs'],
-            'done' => [],
-            'docs' => [],
+            'done' => ['in_progress','in_progress'],
+            'docs' => ['in_progress','in_progress','done'],
         ];
 
         return in_array($newStatus, $transitions[$this->status] ?? []);
@@ -87,7 +87,7 @@ class Task extends Model
     protected static function booted(): void
     {
         static::creating(callback: function ($task) {
-            if(auth()->check()) $task->created_by = Auth::id();
+            if(auth()->check()) $task->creator_id = Auth::id();
         });
         static::updating(callback: function ($task) {
             if(auth()->check()) $task->updated_by = Auth::id();
@@ -103,6 +103,9 @@ class Task extends Model
 
                 if ($newStatus === 'done' && !$task->completed_at) {
                     $task->completed_at = now();
+                }
+                if (in_array($newStatus,['in_progress','issue','open','scheduled','docs'])) {
+                    $task->completed_at = null;
                 }
             }
 

@@ -41,8 +41,8 @@ class Project extends Model
             'scheduled' => ['in_progress', 'done', 'docs', 'issue'],
             'in_progress' => ['done', 'docs', 'issue'],
             'issue' => ['in_progress', 'done', 'docs'],
-            'done' => ['in_progress','in_progress'],
-            'docs' => ['in_progress','in_progress','done'],
+            'done' => ['in_progress','issue'],
+            'docs' => ['in_progress','issue','done'],
         ];
         return in_array($newStatus, $transitions[$this->status] ?? []);
     }

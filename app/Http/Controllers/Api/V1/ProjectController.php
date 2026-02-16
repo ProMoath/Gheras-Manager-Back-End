@@ -101,7 +101,7 @@ class ProjectController extends Controller
      */
     public function update(ProjectRequest $request, Project $project)
     {
-        $this->authorize('update', Project::class);
+        $this->authorize('update', $project);
         $validatedData = $request->validated();
 
                 if (isset($validatedData['status']) && $validatedData['status'] !== $project->status && !$project->canTransitionTo($validatedData['status'])) {
@@ -116,7 +116,7 @@ class ProjectController extends Controller
                 $project->update($validatedData);
                 return response()->json([
                     'success' => true,
-                    'data' => $project->load(['tasks', 'tasks.parentTask', 'tasks.subTask','creator'])->fresh(),
+                    'data' => $project->load(['tasks', 'tasks.parentTask', 'tasks.subTask','creator']),
                     'message' => "Project updated successfully."
                 ], 200);
     }

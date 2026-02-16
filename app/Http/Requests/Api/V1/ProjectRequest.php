@@ -15,17 +15,17 @@ class ProjectRequest extends FormRequest
         return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, ValidationRule|array|string>
-     */
-    protected function prepareForValidation() : array
+    protected function prepareForValidation() : void
     {
         $this->merge([
             'status' => $this->status ?? 'new',
         ]);
     }
+    /**
+     * Get the validation rules that apply to the request.
+     *
+     * @return array<string, ValidationRule|array|string>
+     */
     public function rules(): array
     {
         return [

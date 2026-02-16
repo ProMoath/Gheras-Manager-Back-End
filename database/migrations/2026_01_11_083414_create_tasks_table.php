@@ -22,9 +22,9 @@ return new class extends Migration
             $table->date('due_date')->nullable();
             $table->enum('type',['new','bug']);
             //relationships
-            $table->foreignId('project_id')->nullable()->constrained('projects')->onDelete('restrict');
+            //$table->foreignId('project_id')->nullable()->constrained('projects')->onDelete('restrict');
             $table->foreignId('team_id')->nullable()->constrained('teams')->onDelete('restrict');
-            $table->foreignId('parent_task_id')->nullable()->constrained('tasks')->onDelete('cascade');
+            //$table->foreignId('parent_task_id')->nullable()->constrained('tasks')->onDelete('cascade');
             $table->foreignId('created_by')->constrained('users')->onDelete('cascade');
             $table->foreignId('updated_by')->nullable()->constrained('users')->onDelete('cascade');
 
@@ -39,14 +39,14 @@ return new class extends Migration
 
             $table->index('status');
             $table->index('priority');
-            $table->index('project_id');
+            //$table->index('project_id');
             $table->index('team_id');
             $table->index('created_by');
             $table->index('due_date');
 
             //Complex Indexes
             $table->index(['team_id', 'status']);
-            $table->index(['project_id', 'status']);
+            //$table->index(['project_id', 'status']);
 
         });
     }

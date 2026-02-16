@@ -4,7 +4,6 @@ namespace App\Policies;
 
 use App\Models\Team;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 
 class TeamPolicy
 {
@@ -20,11 +19,10 @@ class TeamPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, Team $team): bool
-    {
-        return $user->isAdmin() || $user->isSupervisor() || $user->id===$team->id;
-
-    }
+        public function view(User $user, Team $team): bool
+        {
+            return $user->isAdmin() || $user->isSupervisor() || $user->teams()->where('teams.id', $team->id)->exists();
+        }
 
     /**
      * Determine whether the user can create models.

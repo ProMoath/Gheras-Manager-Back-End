@@ -113,7 +113,7 @@ class TeamController extends Controller
     public function destroy(Team $team)
     {
         try {
-            $this->authorize('delete', Team::class);
+            $this->authorize('delete', $team);
             $team->delete();
             return response()->json([
                 'success' => true,

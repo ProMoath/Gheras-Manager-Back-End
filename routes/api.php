@@ -21,10 +21,10 @@ Route::prefix('v1')->group(function () {
         });
         Route::apiResource('users', UserController::class);
         Route::prefix('users/{user}')->group(function () {
+            Route::get(   'profile', [UserController::class,'getProfile']);
             Route::post(  'teams',  [UserController::class, 'assignTeam']);
             Route::delete('teams',  [UserController::class, 'removeTeam']);
             Route::patch( 'status', [UserController::class, 'toggleStatus']);
-            Route::get(  'profile', [UserController::class, 'getProfile']);
         });
     // Teams
     Route::apiResource('teams', TeamController::class);

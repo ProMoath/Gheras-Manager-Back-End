@@ -20,8 +20,8 @@ Route::prefix('v1')->group(function () {
             Route::post('refresh', [AuthController::class, 'refresh']);
         });
         Route::apiResource('users', UserController::class);
+        Route::get('profile',[UserController::class,'getProfile']);
         Route::prefix('users/{user}')->group(function () {
-            Route::get(   'profile', [UserController::class,'getProfile']);
             Route::post(  'teams',  [UserController::class, 'assignTeam']);
             Route::delete('teams',  [UserController::class, 'removeTeam']);
             Route::patch( 'status', [UserController::class, 'toggleStatus']);

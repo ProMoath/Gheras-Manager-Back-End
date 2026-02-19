@@ -171,23 +171,23 @@ class UserController extends Controller
         ]);
     }
 
-    public function toggleStatus(User $user)
+    public function toggleStatus(Request $request ,User $user)
     {
         $this->authorize('update',$user);
-
-        $user->status =!$user->status;
-        $user->save();
-
+        $validatedData = $request->validate([
+            'status' => 'required|boolean'?? true
+        ]);
+        $user->update(['status',$validatedData['status']]);
         $statusText = $user->status ? 'تفعيل' : 'تعطيل';
+
         return response()->json([
             'success' => true,
             'message' => "It has been {$statusText} successfully. ",
             'data' => ['status' => $user->status]
         ]);
     }
-    public function getProfile(Request $request,User $user)
+    public function getProfile()
     {
-        $this->authorize('view',$user);
         $user =auth()->user();
         $user->load(['teams','role']);
         return response()->json([

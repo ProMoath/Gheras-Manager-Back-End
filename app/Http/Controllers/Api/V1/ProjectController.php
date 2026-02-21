@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\ProjectRequest;
+use App\Http\Requests\Api\V1\UpdateProjectRequest;
 use App\Models\Project;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
@@ -99,7 +100,7 @@ class ProjectController extends Controller
      * Update the specified resource in storage.
      * @throws \Throwable
      */
-    public function update(ProjectRequest $request, Project $project)
+    public function update(UpdateProjectRequest $request, Project $project)
     {
         $this->authorize('update', $project);
         $validatedData = $request->validated();

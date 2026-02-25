@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\V1\AuthController;
+use App\Http\Controllers\Api\V1\ProjectController;
 use App\Http\Controllers\Api\V1\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -23,5 +24,6 @@ Route::prefix('v1')->group(function () {
             Route::delete('teams',  [UserController::class, 'removeTeam']);
             Route::patch( 'status', [UserController::class, 'toggleStatus']);
         });
+        Route::apiResource('projects', ProjectController::class);
     });
 });

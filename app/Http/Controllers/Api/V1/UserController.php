@@ -175,9 +175,11 @@ class UserController extends Controller
     {
         $this->authorize('update',$user);
         $validatedData = $request->validate([
-            'status' => 'required|boolean'?? true
+            'status' => 'required|boolean'
         ]);
-        $user->update(['status',$validatedData['status']]);
+        $user->update([
+            'status'=>$validatedData['status']
+        ]);
         $statusText = $user->status ? 'تفعيل' : 'تعطيل';
 
         return response()->json([

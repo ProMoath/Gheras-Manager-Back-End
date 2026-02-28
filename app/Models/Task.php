@@ -14,9 +14,9 @@ class Task extends Model
     use HasFactory;
     protected $fillable = [
         'title', 'description', 'status', 'priority', 'due_date',
-        'type', 'team_id', 'project_id', 'parent_task_id',
+        'type', 'team_id', 'project_id', 'assignee_id', 'parent_task_id',
         'started_at', 'completed_at', 'work_hours','status',
-        'created_by'
+        'creator_id'
     ];
 
     // casting
@@ -29,26 +29,26 @@ class Task extends Model
 
     public function creator(): belongsTo
     {
-        return $this->belongsTo(User::class, 'created_by');
+        return $this->belongsTo(User::class, 'creator_id');
     }
     public function editor(): belongsTo
     {
         return $this->belongsTo(User::class, 'updated_by');
     }
-    public function assignees(): BelongsToMany
+    public function assignee(): BelongsTo
     {
-        return $this->belongsToMany(User::class, 'task_user')->withTimestamps();
+        return $this->belongsTo(User::class, 'assignee_id');
     }
-    public function team(): BelongsTo
+    public function teams(): BelongsTo
     {
         return $this->belongsTo(Team::class);
     }
-    /*public function project(): BelongsTo
+    public function project(): BelongsTo
     {
         return $this->belongsTo(Project::class);
     }
     // linked tasks
-    public function linkedTasks(): BelongsToMany //get the linkedTask that related to sourceTask
+    public function linkedTask(): BelongsToMany //get the linkedTask that related to sourceTask
     {
         return $this->belongsToMany(Task::class, 'tasklink','linked_task_id','source_task_id');
     }
@@ -73,10 +73,12 @@ class Task extends Model
     public function canTransitionTo(string $newStatus): bool
     {
         $transitions = [
-            'open' => ['in_progress'],
-            'in_progress' => ['testing', 'open'],
-            'testing' => ['resolved', 'in_progress'],
-            'resolved' => ['in_progress', 'testing'],
+            'new' => ['scheduled', 'in_progress', 'done', 'docs', 'issue'],
+            'scheduled' => ['in_progress', 'done', 'docs', 'issue'],
+            'in_progress' => ['done', 'docs', 'issue'],
+            'issue' => ['in_progress', 'done', 'docs'],
+            'done' => ['in_progress','in_progress'],
+            'docs' => ['in_progress','in_progress','done'],
         ];
 
         return in_array($newStatus, $transitions[$this->status] ?? []);
@@ -85,10 +87,10 @@ class Task extends Model
     protected static function booted(): void
     {
         static::creating(callback: function ($task) {
-            if(auth()->check()) $task->created_by = V1::id();
+            if(auth()->check()) $task->creator_id = Auth::id();
         });
         static::updating(callback: function ($task) {
-            if(auth()->check()) $task->updated_by = V1::id();
+            if(auth()->check()) $task->updated_by = Auth::id();
         });         // automatically add creator or updater of the task
 
         static::updating(function (Task $task) {
@@ -102,10 +104,13 @@ class Task extends Model
                 if ($newStatus === 'done' && !$task->completed_at) {
                     $task->completed_at = now();
                 }
+                if (in_array($newStatus,['in_progress','issue','open','scheduled','docs'])) {
+                    $task->completed_at = null;
+                }
             }
 
         });
 
     }
-    // Status transition logic*/
+    // Status transition logic
 }

@@ -17,15 +17,16 @@ return new class extends Migration
             $table->longText('description')->nullable();
 
             //statues & priority
-            $table->enum('status', ['open', 'in_progress', 'testing', 'resolved']);
-            $table->enum('priority', ['critical', 'major', 'minor']);
+            $table->enum('status', ['new', 'scheduled', 'in_progress', 'issue', 'done', 'docs'])->default('new');
+            $table->enum('priority', ['very_urgent', 'urgent', 'medium','normal']);
             $table->date('due_date')->nullable();
             $table->enum('type',['new','bug']);
             //relationships
-            //$table->foreignId('project_id')->nullable()->constrained('projects')->onDelete('restrict');
+            //$table->foreignId('project_id')->nullable()->constrained('projects')->onDelete('cascade');
             $table->foreignId('team_id')->nullable()->constrained('teams')->onDelete('restrict');
-            //$table->foreignId('parent_task_id')->nullable()->constrained('tasks')->onDelete('cascade');
-            $table->foreignId('created_by')->constrained('users')->onDelete('cascade');
+           // $table->foreignId('parent_task_id')->nullable()->constrained('tasks')->onDelete('cascade');
+            $table->foreignId('assignee_id')->nullable()->constrained('users')->onDelete('restrict');
+            $table->foreignId('creator_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('updated_by')->nullable()->constrained('users')->onDelete('cascade');
 
             //dates
@@ -39,14 +40,16 @@ return new class extends Migration
 
             $table->index('status');
             $table->index('priority');
-            //$table->index('project_id');
+          //  $table->index('project_id');
             $table->index('team_id');
-            $table->index('created_by');
+            $table->index('assignee_id');
+            $table->index('creator_id');
             $table->index('due_date');
 
             //Complex Indexes
             $table->index(['team_id', 'status']);
-            //$table->index(['project_id', 'status']);
+            $table->index(['assignee_id', 'status']);
+           // $table->index(['project_id', 'status']);
 
         });
     }

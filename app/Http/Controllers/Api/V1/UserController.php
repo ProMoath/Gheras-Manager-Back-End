@@ -89,15 +89,21 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(User $user)
+    public function show($id)
     {
+        $user = User::findOrFail($id);
+        if(!$user)
+            return response()->json([
+                'success' => false,
+                'message' => "User not found.",
+                'data' => null
+            ],404);
         $this->authorize('view', $user);
-
         $user->load('teams','role');
         return response()->json([
             'success' => true,
             'data' => $user,
-        ]);
+        ],200);
     }
     /**
      * Update the specified resource in storage.

@@ -75,8 +75,15 @@ class TeamController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Team $team)
+    public function show($id)
     {
+        $team = Team::findOrFail($id);
+        if(!$id)
+            return response()->json([
+                'success' => false,
+                'message' => 'Team not found',
+                'data' => null
+            ],404);
         $this->authorize('view', $team);
         $data=$team->load(['users','tasks' => function ($query)
     {

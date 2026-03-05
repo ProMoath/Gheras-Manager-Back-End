@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\RegisterRequest;
 use App\Http\Requests\Api\V1\UpdateUserRequest;
+use App\Http\Resources\UserProfileResource;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -85,21 +86,25 @@ class UserController extends Controller
         ],201);
 
     }
-
     /**
      * Display the specified resource.
      */
-    public function show(User $user)
+    public function show($id)
     {
+        $user = User::findOrFail($id);
+        if(!$user)
+            return response()->json([
+                'success' => false,
+                'message' => "User not found.",
+                'data' => null
+            ],404);
         $this->authorize('view', $user);
-
         $user->load('teams','role');
         return response()->json([
             'success' => true,
             'data' => $user,
-        ]);
+        ],200);
     }
-
     /**
      * Update the specified resource in storage.
      */
@@ -170,21 +175,33 @@ class UserController extends Controller
             'success' => true,
             'message' => "User removed from team successfully."
         ]);
-
     }
 
-    public function toggleStatus(User $user)
+    public function toggleStatus(Request $request ,User $user)
     {
         $this->authorize('update',$user);
-
-        $user->status =!$user->status;
-        $user->save();
-
+        $validatedData = $request->validate([
+            'status' => 'required|boolean'
+        ]);
+        $user->update([
+            'status'=>$validatedData['status']
+        ]);
         $statusText = $user->status ? 'تفعيل' : 'تعطيل';
+
         return response()->json([
             'success' => true,
             'message' => "It has been {$statusText} successfully. ",
             'data' => ['status' => $user->status]
         ]);
+    }
+    public function getProfile()
+    {
+        $user =auth()->user();
+        $user->load(['teams','role']);
+        return response()->json([
+            'success' => true,
+            'data' => new UserProfileResource($user),
+            'message' => "User {$user->name} profile retrieved successfully."
+        ],200);
     }
 }

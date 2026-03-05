@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('team_user', function (Blueprint $table) {
             $table->foreignId('user_id')->constrained('users')->onDelete('restrict');
             $table->foreignId('team_id')->constrained('teams')->onDelete('restrict');
+            $table->enum('role', ['member', 'admin'])->default('member');
             $table->timestamps();
 
             // Composite primary key

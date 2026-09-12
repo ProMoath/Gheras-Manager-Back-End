@@ -43,7 +43,7 @@ class Task extends Model
     {
         return $this->belongsTo(Team::class);
     }
-    public function project(): BelongsTo
+    /*public function project(): BelongsTo
     {
         return $this->belongsTo(Project::class);
     }
@@ -113,4 +113,5 @@ class Task extends Model
 
     }
     // Status transition logic
+    */
 }
